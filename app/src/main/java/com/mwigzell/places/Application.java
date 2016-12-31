@@ -1,10 +1,13 @@
 package com.mwigzell.places;
 
+import android.support.multidex.MultiDexApplication;
+
 import com.crashlytics.android.Crashlytics;
 import com.mwigzell.places.dagger.AppComponent;
 import com.mwigzell.places.dagger.AppModule;
 import com.mwigzell.places.dagger.DaggerAppComponent;
 import com.mwigzell.places.dagger.Injection;
+import com.mwigzell.places.data.DataService;
 import com.mwigzell.places.network.NetworkService;
 import com.mwigzell.places.redux.AppAction;
 import com.mwigzell.places.redux.AppState;
@@ -21,7 +24,7 @@ import timber.log.Timber;
  * Created by mwigzell on 12/10/16.
  */
 
-public class Application extends android.app.Application implements Subscriber {
+public class Application extends MultiDexApplication implements Subscriber {
     public static final String GOOGLE_PLACES_API_KEY = "AIzaSyCfiVBYgyTtCJUKziOBx7H367ovTkpr6JE";
 
     @Inject
@@ -29,6 +32,9 @@ public class Application extends android.app.Application implements Subscriber {
 
     @Inject
     NetworkService networkService;
+
+    @Inject
+    DataService dataService;
 
     @Override
     public void onCreate() {

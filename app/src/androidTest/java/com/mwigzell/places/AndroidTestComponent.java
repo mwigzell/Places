@@ -16,4 +16,5 @@ import dagger.Component;
 public interface AndroidTestComponent extends AppComponent {
     void inject(ActionCreatorAndroidTest test);
     void inject(HttpUtilsTest test);
+    void inject(DataServiceTest test);
 }

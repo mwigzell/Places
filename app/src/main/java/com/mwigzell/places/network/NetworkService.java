@@ -15,11 +15,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import timber.log.Timber;
 
+@Singleton
 public class NetworkService implements Subscriber {
 
     @Inject
@@ -40,14 +42,16 @@ public class NetworkService implements Subscriber {
         client = serviceCreator.createService(ServiceCreator.PlacesClient.class);
     }
 
-
     public void getPlaces() {
+        getPlaces("-33.8670522,151.1957362", "500", "food&name=harbour");
+    }
+
+    public void getPlaces(String location, String radius, String type) {
         Timber.d("Get places");
 
-        client.getPlaces("-33.8670522,151.1957362", "500", "food&name=harbour", Application.GOOGLE_PLACES_API_KEY)
+        client.getPlaces(location, radius, type, Application.GOOGLE_PLACES_API_KEY)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                //.subscribe(new rx.Subscriber<List<Clinic>>() {
                 .subscribe(new rx.Subscriber<PlacesResponse>() {
                     @Override
                     public void onCompleted() {
@@ -57,7 +61,7 @@ public class NetworkService implements Subscriber {
                     @Override
                     public void onError(Throwable e) {
                         Timber.e(e, "  error with exception");
-                        //actionCreator.fetchClinicsFailed(e.getMessage());
+                        actionCreator.getPlacesFailed(e);
                     }
 
                     @Override
@@ -71,7 +75,7 @@ public class NetworkService implements Subscriber {
     @Override
     public void onStateChanged() {
         AppState.States state = store.getState().state;
-        Timber.e("State Changed: %s",state.name());
+        Timber.d("State Changed: %s",state.name());
         if (state == AppState.States.GET_PLACES) {
             getPlaces();
         }
