@@ -1,6 +1,5 @@
 package com.mwigzell.places.activities;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -12,14 +11,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.mwigzell.places.Application;
 import com.mwigzell.places.R;
-import com.mwigzell.places.dagger.Injection;
 import com.mwigzell.places.model.Place;
 
 import java.util.List;
-
-import javax.inject.Inject;
-
-import timber.log.Timber;
 
 /**
  *  Adapt List<Place> to RecyclerView.Adapter

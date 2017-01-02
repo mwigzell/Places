@@ -73,13 +73,13 @@ public class TypesFragment extends BaseFragment {
 
     @Override
     public void onStateChanged() {
-        AppState.States state = store.getState().state;
+        AppState.States state = store.getState().state();
         //Timber.d("Got state=" + state);
         switch(state) {
             case TYPES_LOADED:
                 emptyList.setVisibility(View.GONE);
                 typesList.clear();
-                typesList.addAll(store.getState().types);
+                typesList.addAll(store.getState().types());
                 adapter.notifyDataSetChanged();
                 break;
         }

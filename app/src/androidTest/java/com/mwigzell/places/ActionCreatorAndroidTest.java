@@ -52,7 +52,7 @@ public class ActionCreatorAndroidTest {
         store.subscribe(subscriber);
         actionCreator.init();
 
-        assertEquals(AppState.States.INIT, store.getState().state);
+        assertEquals(AppState.States.INIT, store.getState().state());
         verify(subscriber).onStateChanged();
     }
 }

@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements Subscriber {
 
     @Override
     public void onStateChanged() {
-        AppState.States state = store.getState().state;
+        AppState.States state = store.getState().state();
         //Timber.d("Got state=" + state);
         switch(state) {
 

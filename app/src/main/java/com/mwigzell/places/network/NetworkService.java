@@ -69,7 +69,7 @@ public class NetworkService implements Subscriber {
 
     @Override
     public void onStateChanged() {
-        AppState.States state = store.getState().state;
+        AppState.States state = store.getState().state();
         //Timber.d("State Changed: %s",state.name());
         if (state == AppState.States.GET_PLACES) {
             getPlaces();

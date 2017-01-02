@@ -1,13 +1,17 @@
 package com.mwigzell.places;
 
+import android.location.Location;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.mwigzell.places.model.Place;
+import com.mwigzell.places.model.Type;
 import com.mwigzell.places.redux.AppAction;
 import com.mwigzell.places.redux.AppReducer;
 import com.mwigzell.places.redux.AppState;
+import com.mwigzell.places.redux.ImmutableAppState;
 import com.mwigzell.places.redux.PersistanceController;
+import com.mwigzell.places.redux.PlaceState;
 import com.mwigzell.places.redux.jedux.Action;
 import com.mwigzell.places.redux.jedux.Logger;
 import com.mwigzell.places.redux.jedux.Store;
@@ -22,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
 
 /**
  *
@@ -46,17 +51,28 @@ public class PersistanceControllerTest {
         List<Store.Reducer<AppAction, AppState>> reducers = new ArrayList<>();
         AppReducer appReducer = new AppReducer(reducers);
         Logger<AppAction, AppState> logger = new Logger("Test");
-        AppState appState = new AppState();
+        AppState appState = ImmutableAppState.builder()
+                .placeState(new PlaceState())
+                .state(AppState.States.INIT)
+                .lastError(new UnsupportedOperationException())
+                .types(new ArrayList<Type>())
+                .location(new Location("dummy"))
+                .selectedType(new Type("name url"))
+                .build();
         store = new Store(appReducer, appState, logger, persistanceController);
         List<Place> places = new ArrayList<>();
+        Place place = new Place();
+        place.name = "a_name";
+        places.add(place);
         AppAction action = new AppAction(AppAction.Actions.PLACES_DOWNLOADED, places);
         store.dispatch(action);
 
-        assertEquals(AppState.States.PLACES_DOWNLOADED, store.getState().state);
+        assertEquals(AppState.States.PLACES_DOWNLOADED, store.getState().state());
 
-        AppState state = (AppState)persistanceController.getSavedState();
+        AppState state = persistanceController.getSavedState();
 
-        assertEquals(AppState.States.PLACES_DOWNLOADED, state.state);
-        assertEquals(places, state.placeState.places);
+        assertEquals(AppState.States.PLACES_DOWNLOADED, state.state());
+        assertTrue(state.placeState().places.size() == 1);
+        assertEquals("a_name", state.placeState().places.get(0).name);
     }
 }

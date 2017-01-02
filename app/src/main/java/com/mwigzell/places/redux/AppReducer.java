@@ -20,32 +20,36 @@ public class AppReducer extends CombinedReducers<AppAction, AppState> implements
         AppState nextState = null;
         switch(action.getType()) {
             case INIT:
-                nextState = new AppState();
+                nextState = ImmutableAppState.copyOf(state).withState(AppState.States.INIT);
                 break;
             case RESTART:
-                nextState = new AppState(AppState.States.RESTARTED);
+                nextState = ImmutableAppState.copyOf(state).withState(AppState.States.RESTARTED);
                 break;
             case GET_PLACES:
-                nextState = new AppState(state, AppState.States.GET_PLACES);
+                nextState = ImmutableAppState.copyOf(state).withState(AppState.States.GET_PLACES);
                 break;
             case GET_PLACES_FAILED:
-                nextState = new AppState(state, AppState.States.GET_PLACES_FAILED, (Throwable)action.value);
+                nextState = ImmutableAppState.copyOf(state).withState(AppState.States.GET_PLACES_FAILED)
+                    .withLastError((Throwable)action.value);
                 break;
             case PLACES_DOWNLOADED:
-                nextState = new AppState(state, AppState.States.PLACES_DOWNLOADED,
-                        new PlaceState(state.placeState, (List<Place>)action.value));
+                nextState = ImmutableAppState.copyOf(state).withState(AppState.States.PLACES_DOWNLOADED)
+                        .withPlaceState(new PlaceState(state.placeState(), (List<Place>)action.value));
                 break;
             case LOAD_TYPES:
-                nextState = new AppState(state, AppState.States.LOAD_TYPES);
+                nextState = ImmutableAppState.copyOf(state).withState(AppState.States.LOAD_TYPES);
                 break;
             case TYPES_LOADED:
-                nextState = new AppState(state, AppState.States.TYPES_LOADED, (List<Type>)action.value);
+                nextState = ImmutableAppState.copyOf(state).withState(AppState.States.TYPES_LOADED)
+                    .withTypes((List<Type>)action.value);
                 break;
             case LOCATION_UPDATED:
-                nextState = new AppState(state, AppState.States.LOCATION_UPDATED, (Location)action.value);
+                nextState = ImmutableAppState.copyOf(state).withState(AppState.States.LOCATION_UPDATED)
+                    .withLocation((Location)action.value);
                 break;
             case SELECT_TYPE:
-                nextState = new AppState(state, AppState.States.SELECTED_TYPE, (Type)action.value);
+                nextState = ImmutableAppState.copyOf(state).withState(AppState.States.SELECTED_TYPE)
+                    .withSelectedType((Type)action.value);
                 break;
             default:
                 nextState = super.reduce(action, state);

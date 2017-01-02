@@ -57,31 +57,32 @@ public class DataService implements Subscriber {
     @Override
     public void onStateChanged() {
         //Timber.d("got state: " + store.getState().state);
-        switch(store.getState().state) {
+        switch(store.getState().state()) {
             case LOAD_TYPES:
-                List<Type> types = store.getState().types;
-                if (types == null || types.size() == 0) {
-                    AsyncTask loadTypes = new AsyncTask<Object, Void, List<Type>>() {
-                        @Override
-                        protected List<Type> doInBackground(Object... params) {
-                            List<Type> result = null;
+                final List<Type> types = store.getState().types();
+                AsyncTask loadTypes = new AsyncTask<Object, Void, List<Type>>() {
+                    @Override
+                    protected List<Type> doInBackground(Object... params) {
+                        List<Type> result = null;
+                        if (types.size() == 0) {
                             try {
                                 result = loadTypes();
                             } catch (Exception e) {
                                 lastError = e;
                             }
-                            return result;
+                        } else {
+                            result = types;
                         }
+                        return result;
+                    }
 
-                        @Override
-                        protected void onPostExecute(List<Type> types) {
-                            actionCreator.typesLoaded(types);
-                        }
-                    };
-                    loadTypes.execute();
-                } else {
-                    actionCreator.typesLoaded(types);
-                }
+                    @Override
+                    protected void onPostExecute(List<Type> types) {
+                        actionCreator.typesLoaded(types);
+                    }
+                };
+                loadTypes.execute();
+
                 break;
         }
     }

@@ -51,7 +51,7 @@ public class Application extends MultiDexApplication implements Subscriber {
 
         store.subscribe(this);
 
-        if (store.getState().state == AppState.States.INIT) {
+        if (store.getState().state() == AppState.States.INIT) {
             actionCreator.init();
         } else {
             actionCreator.restart();

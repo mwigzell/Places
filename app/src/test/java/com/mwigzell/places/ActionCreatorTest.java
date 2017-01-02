@@ -48,6 +48,9 @@ public class ActionCreatorTest {
     @Inject
     Store<AppAction, AppState> store;
 
+    @Inject
+    AppState appState;
+
     @Mock
     Context context;
 
@@ -58,7 +61,7 @@ public class ActionCreatorTest {
 
     public Store<AppAction, AppState> provideStore() {
         List<Reducer<AppAction, AppState>> reducers = new ArrayList<>();
-        store =  new Store(new AppReducer(reducers), new AppState());
+        store =  new Store(new AppReducer(reducers), appState);
         return store;
     }
 
@@ -80,7 +83,7 @@ public class ActionCreatorTest {
         store.subscribe(subscriber);
         actionCreator.init();
 
-        assertEquals(AppState.States.INIT, store.getState().state);
+        assertEquals(AppState.States.INIT, store.getState().state());
         verify(subscriber).onStateChanged();
     }
 
@@ -89,7 +92,7 @@ public class ActionCreatorTest {
         store.subscribe(subscriber);
         actionCreator.restart();
 
-        assertEquals(AppState.States.RESTARTED, store.getState().state);
+        assertEquals(AppState.States.RESTARTED, store.getState().state());
         verify(subscriber).onStateChanged();
     }
 
@@ -98,7 +101,7 @@ public class ActionCreatorTest {
         store.subscribe(subscriber);
         actionCreator.getPlaces();
 
-        assertEquals(AppState.States.GET_PLACES, store.getState().state);
+        assertEquals(AppState.States.GET_PLACES, store.getState().state());
         verify(subscriber).onStateChanged();
     }
 
@@ -108,8 +111,8 @@ public class ActionCreatorTest {
         List<Place> places = new ArrayList<>();
         actionCreator.placesDownloaded(places);
 
-        assertEquals(AppState.States.PLACES_DOWNLOADED, store.getState().state);
-        assertEquals(places, store.getState().placeState.places);
+        assertEquals(AppState.States.PLACES_DOWNLOADED, store.getState().state());
+        assertEquals(places, store.getState().placeState().places);
         verify(subscriber).onStateChanged();
     }
 
@@ -119,8 +122,8 @@ public class ActionCreatorTest {
         Throwable e = new Exception();
         actionCreator.getPlacesFailed(e);
 
-        assertEquals(AppState.States.GET_PLACES_FAILED, store.getState().state);
-        assertEquals(e, store.getState().lastError);
+        assertEquals(AppState.States.GET_PLACES_FAILED, store.getState().state());
+        assertEquals(e, store.getState().lastError());
         verify(subscriber).onStateChanged();
     }
 
@@ -129,7 +132,7 @@ public class ActionCreatorTest {
         store.subscribe(subscriber);
         actionCreator.loadTypes();
 
-        assertEquals(AppState.States.LOAD_TYPES, store.getState().state);
+        assertEquals(AppState.States.LOAD_TYPES, store.getState().state());
         verify(subscriber).onStateChanged();
     }
 
@@ -139,8 +142,8 @@ public class ActionCreatorTest {
         List<Type> types = new ArrayList<>();
         actionCreator.typesLoaded(types);
 
-        assertEquals(AppState.States.TYPES_LOADED, store.getState().state);
-        assertEquals(types, store.getState().types);
+        assertEquals(AppState.States.TYPES_LOADED, store.getState().state());
+        assertEquals(types, store.getState().types());
         verify(subscriber).onStateChanged();
     }
 
@@ -150,8 +153,8 @@ public class ActionCreatorTest {
         Location location = new Location("fused");
         actionCreator.locationUpdated(location);
 
-        assertEquals(AppState.States.LOCATION_UPDATED, store.getState().state);
-        assertEquals(location, store.getState().location);
+        assertEquals(AppState.States.LOCATION_UPDATED, store.getState().state());
+        assertEquals(location, store.getState().location());
         verify(subscriber).onStateChanged();
     }
 
@@ -160,8 +163,8 @@ public class ActionCreatorTest {
         Type type = new Type("a_name an_url");
         actionCreator.selectType(type);
 
-        assertEquals(AppState.States.SELECTED_TYPE, store.getState().state);
-        assertEquals(type, store.getState().selectedType);
+        assertEquals(AppState.States.SELECTED_TYPE, store.getState().state());
+        assertEquals(type, store.getState().selectedType());
         verify(subscriber).onStateChanged();
     }
 
@@ -182,18 +185,11 @@ public class ActionCreatorTest {
         actionCreator.getPlaces();
 
 
-        assertEquals(type, store.getState().selectedType);
-        assertEquals(location, store.getState().location);
-        assertEquals(types, store.getState().types);
-        assertEquals(e, store.getState().lastError);
-        assertEquals(places, store.getState().placeState.places);
-
-        actionCreator.init();
-
-        assertNull(store.getState().selectedType);
-        assertNull(store.getState().location);
-        assertNull(store.getState().types);
-        assertNull(store.getState().lastError);
-        assertNull(store.getState().placeState);
+        assertEquals(AppState.States.GET_PLACES, store.getState().state());
+        assertEquals(type, store.getState().selectedType());
+        assertEquals(location, store.getState().location());
+        assertEquals(types, store.getState().types());
+        assertEquals(e, store.getState().lastError());
+        assertEquals(places, store.getState().placeState().places);
     }
 }

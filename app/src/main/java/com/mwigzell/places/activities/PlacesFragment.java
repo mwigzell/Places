@@ -32,7 +32,7 @@ import timber.log.Timber;
  */
 
 public class PlacesFragment extends BaseFragment {
-    private static final String DEFAULT_LOCATION = "-33.8670522,151.1957362";
+    public static final String DEFAULT_LOCATION = "-33.8670522,151.1957362";
 
     @BindView(R.id.emptyList)
     ProgressBar emptyList;
@@ -77,22 +77,25 @@ public class PlacesFragment extends BaseFragment {
         super.checkResumeLocation();
         adapter = new PlacesViewAdapter(placesList);
         recyclerView.setAdapter(adapter);
+        fetchPlaces();
+    }
+
+    private void fetchPlaces() {
+        Location location = store.getState().location();
+        String loc;
+        if (location.getLongitude() != 0 && location.getLatitude() != 0) {
+            loc = location.getLatitude() + "," + location.getLongitude();
+        } else {
+            loc = DEFAULT_LOCATION;
+        }
+        Type selectedType = store.getState().selectedType();
+        String name = selectedType == null ? "restaurant" : selectedType.name;
+        networkService.getPlaces(loc, "5000", name);
     }
 
     private void updateView() {
         if (placesList.size() > 0) {
             adapter.notifyDataSetChanged();
-        } else {
-            Location location = store.getState().location;
-            String loc;
-            if (location != null) {
-                loc = location.getLatitude() + "," + location.getLongitude();
-            } else {
-                loc = DEFAULT_LOCATION;
-            }
-            Type selectedType = store.getState().selectedType;
-            String name = selectedType == null ? "restaurant" : selectedType.name;
-            networkService.getPlaces(loc, "5000", name);
         }
     }
 
@@ -104,13 +107,13 @@ public class PlacesFragment extends BaseFragment {
 
     @Override
     public void onStateChanged() {
-        AppState.States state = store.getState().state;
+        AppState.States state = store.getState().state();
         //Timber.d("Got state=" + state);
         switch(state) {
             case PLACES_DOWNLOADED:
                 emptyList.setVisibility(View.GONE);
                 placesList.clear();
-                placesList.addAll(store.getState().placeState.places);
+                placesList.addAll(store.getState().placeState().places);
                 updateView();
                 break;
             case LOCATION_UPDATED:
