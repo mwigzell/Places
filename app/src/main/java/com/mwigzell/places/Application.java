@@ -3,15 +3,13 @@ package com.mwigzell.places;
 import android.support.multidex.MultiDexApplication;
 
 import com.crashlytics.android.Crashlytics;
-import com.mwigzell.places.dagger.AppComponent;
-import com.mwigzell.places.dagger.AppModule;
-import com.mwigzell.places.dagger.DaggerAppComponent;
 import com.mwigzell.places.dagger.Injection;
 import com.mwigzell.places.data.DataService;
 import com.mwigzell.places.network.NetworkService;
+import com.mwigzell.places.redux.ActionCreator;
 import com.mwigzell.places.redux.AppAction;
 import com.mwigzell.places.redux.AppState;
-import com.mwigzell.places.redux.original.Store;
+import com.mwigzell.places.redux.jedux.Store;
 import com.mwigzell.places.redux.original.Subscriber;
 import com.mwigzell.places.util.Log;
 
@@ -36,6 +34,9 @@ public class Application extends MultiDexApplication implements Subscriber {
     @Inject
     DataService dataService;
 
+    @Inject
+    ActionCreator actionCreator;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -49,10 +50,16 @@ public class Application extends MultiDexApplication implements Subscriber {
         Injection.create(this).getComponent().inject(this);
 
         store.subscribe(this);
+
+        if (store.getState().state == AppState.States.INIT) {
+            actionCreator.init();
+        } else {
+            actionCreator.restart();
+        }
     }
 
     @Override
     public void onStateChanged() {
-        Timber.d("Got state change");
+        //Timber.d("Got state change");
     }
 }

@@ -16,7 +16,7 @@ import com.mwigzell.places.dagger.Injection;
 import com.mwigzell.places.redux.ActionCreator;
 import com.mwigzell.places.redux.AppAction;
 import com.mwigzell.places.redux.AppState;
-import com.mwigzell.places.redux.original.Store;
+import com.mwigzell.places.redux.jedux.Store;
 import com.mwigzell.places.redux.original.Subscriber;
 import com.mwigzell.places.redux.original.Subscription;
 
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements Subscriber {
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawer.addDrawerListener(drawerToggle);
         selectDrawerItem(nvDrawer.getMenu().getItem(0));
-        actionCreator.init();
+        //actionCreator.init();
     }
 
     // `onPostCreate` called when activity start-up is complete after `onStart()`
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements Subscriber {
     @Override
     public void onStateChanged() {
         AppState.States state = store.getState().state;
-        Timber.d("Got state=" + state);
+        //Timber.d("Got state=" + state);
         switch(state) {
 
         }

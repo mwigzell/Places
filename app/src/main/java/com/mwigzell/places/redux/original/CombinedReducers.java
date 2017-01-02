@@ -3,6 +3,10 @@ package com.mwigzell.places.redux.original;
 import java.util.Arrays;
 import java.util.List;
 
+import com.mwigzell.places.redux.AppState;
+import com.mwigzell.places.redux.jedux.Store.Reducer;
+import com.mwigzell.places.redux.jedux.Action;
+
 public class CombinedReducers<A extends Action, S extends State> implements Reducer<A, S> {
 
     @SafeVarargs public static <A extends Action, S extends State> CombinedReducers<A, S> from(Reducer<A, S>... reducers) {
@@ -16,9 +20,9 @@ public class CombinedReducers<A extends Action, S extends State> implements Redu
     }
 
     @Override
-    public S call(A action, S state) {
+    public S reduce(A action, S state) {
         for (Reducer<A, S> reducer : reducers) {
-            state = reducer.call(action, state);
+            state = reducer.reduce(action, state);
         }
         return state;
     }

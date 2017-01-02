@@ -7,7 +7,7 @@ import com.mwigzell.places.dagger.AppModule;
 import com.mwigzell.places.redux.ActionCreator;
 import com.mwigzell.places.redux.AppAction;
 import com.mwigzell.places.redux.AppState;
-import com.mwigzell.places.redux.original.Store;
+import com.mwigzell.places.redux.jedux.Store;
 import com.mwigzell.places.redux.original.Subscriber;
 
 import org.junit.Before;

@@ -123,4 +123,8 @@ public class Place {
     @SerializedName("vicinity")
     @Expose
     public String vicinity;
+
+    public String toString() {
+        return name;
+    }
 }

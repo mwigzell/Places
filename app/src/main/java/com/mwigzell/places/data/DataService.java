@@ -9,7 +9,7 @@ import com.mwigzell.places.model.Type;
 import com.mwigzell.places.redux.ActionCreator;
 import com.mwigzell.places.redux.AppAction;
 import com.mwigzell.places.redux.AppState;
-import com.mwigzell.places.redux.original.Store;
+import com.mwigzell.places.redux.jedux.Store;
 import com.mwigzell.places.redux.original.Subscriber;
 
 import java.io.BufferedReader;
@@ -56,7 +56,7 @@ public class DataService implements Subscriber {
 
     @Override
     public void onStateChanged() {
-        Timber.d("got state: " + store.getState().state);
+        //Timber.d("got state: " + store.getState().state);
         switch(store.getState().state) {
             case LOAD_TYPES:
                 List<Type> types = store.getState().types;
@@ -79,6 +79,8 @@ public class DataService implements Subscriber {
                         }
                     };
                     loadTypes.execute();
+                } else {
+                    actionCreator.typesLoaded(types);
                 }
                 break;
         }

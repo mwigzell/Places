@@ -5,6 +5,9 @@ import android.location.Location;
 import com.mwigzell.places.model.Type;
 import com.mwigzell.places.redux.original.State;
 
+import org.immutables.gson.Gson;
+import org.immutables.value.Value;
+
 import java.util.List;
 
 import timber.log.Timber;
@@ -12,10 +15,12 @@ import timber.log.Timber;
 /**
  * Created by mwigzell on 12/10/16.
  */
-
+@Value.Immutable
+@Gson.TypeAdapters
 public class AppState implements State {
     public enum States {
         INIT,
+        RESTARTED,
         GET_PLACES,
         GET_PLACES_FAILED,
         PLACES_DOWNLOADED,
@@ -32,37 +37,40 @@ public class AppState implements State {
     public final Location location;
     public final Type selectedType;
 
-    private void logStateChange(final AppState oldState, final States nextState) {
+    /*private void logStateChange(final AppState oldState, final States nextState) {
         Timber.d("State Change:");
         if (oldState != null)
             Timber.d("  Oldstate: %s", oldState.state.name());
 
         if (nextState != null)
             Timber.d("  New state: %s",nextState.name());
-    }
+    }*/
 
     public AppState() {
-        this(null, States.INIT);
+        this(States.INIT);
+    }
+    public AppState(final States nextState) {
+        this(nextState, null, null, null, null, null);
     }
     public AppState(final AppState oldState, final States nextState) {
-        this(oldState, nextState, null, null, null, null, null);
+        this(nextState, oldState.placeState, oldState.lastError, oldState.types, oldState.location, oldState.selectedType);
     }
     public AppState(final AppState oldState, final States nextState, final Throwable lastError) {
-        this(oldState, nextState, null, lastError, null, null, null);
+        this(nextState, oldState.placeState, lastError, oldState.types, oldState.location, oldState.selectedType);
     }
     public AppState(final AppState oldState, final States nextState, final PlaceState placeState) {
-        this(oldState, nextState, placeState, null, null, null, null);
+        this(nextState, placeState, oldState.lastError, oldState.types, oldState.location, oldState.selectedType);
     }
     public AppState(final AppState oldState, final States nextState, final List<Type> types) {
-        this(oldState, nextState, null, null, types, null, null);
+        this(nextState, oldState.placeState, oldState.lastError, types, oldState.location, oldState.selectedType);
     }
     public AppState(final AppState oldState, final States nextState, final Location location) {
-        this(oldState, nextState, null, null, null, location, null);
+        this(nextState, oldState.placeState, oldState.lastError, oldState.types, location, oldState.selectedType);
     }
     public AppState(final AppState oldState, final States nextState, final Type type) {
-        this(oldState, nextState, null, null, null, null, type);
+        this(nextState, oldState.placeState, oldState.lastError, oldState.types, oldState.location, type);
     }
-    public AppState(final AppState oldState, final States nextState, final PlaceState placeState,
+    public AppState(final States nextState, final PlaceState placeState,
                     final Throwable lastError, final List<Type> types, final Location location, final Type selectedType) {
         state = nextState;
         this.placeState = placeState;
@@ -71,6 +79,10 @@ public class AppState implements State {
         this.location = location;
         this.selectedType = selectedType;
 
-        logStateChange(oldState, nextState);
+        //logStateChange(oldState, nextState);
+    }
+
+    public String toString() {
+        return state.toString();
     }
 }

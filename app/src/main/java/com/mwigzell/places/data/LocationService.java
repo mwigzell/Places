@@ -18,7 +18,7 @@ import com.mwigzell.places.dagger.Injection;
 import com.mwigzell.places.redux.ActionCreator;
 import com.mwigzell.places.redux.AppAction;
 import com.mwigzell.places.redux.AppState;
-import com.mwigzell.places.redux.original.Store;
+import com.mwigzell.places.redux.jedux.Store;
 import com.mwigzell.places.redux.original.Subscriber;
 import com.mwigzell.places.redux.original.Subscription;
 
@@ -63,12 +63,8 @@ public class LocationService implements Subscriber,
 
     @Override
     public void onStateChanged() {
-        AppState.States state = store.getState().state;
-        Timber.d("onStateChanged: " + state);
-        switch(state) {
-            case INIT:
-                locationCreation();
-                break;
+        if (mLocationClient == null) {
+            locationCreation();
         }
     }
 
@@ -95,7 +91,7 @@ public class LocationService implements Subscriber,
 
     public void locationResume() {
         Timber.d("locationResume");
-        if (mLocationClient.isConnected()) {
+        if (mLocationClient != null && mLocationClient.isConnected()) {
             startLocationUpdates();
         }
     }

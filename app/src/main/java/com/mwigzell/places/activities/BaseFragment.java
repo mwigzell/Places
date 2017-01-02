@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import com.mwigzell.places.data.LocationService;
 import com.mwigzell.places.redux.AppAction;
 import com.mwigzell.places.redux.AppState;
-import com.mwigzell.places.redux.original.Store;
+import com.mwigzell.places.redux.jedux.Store;
 import com.mwigzell.places.redux.original.Subscriber;
 import com.mwigzell.places.redux.original.Subscription;
 

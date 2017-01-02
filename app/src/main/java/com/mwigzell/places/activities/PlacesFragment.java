@@ -1,12 +1,8 @@
 package com.mwigzell.places.activities;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,16 +12,11 @@ import android.widget.ProgressBar;
 
 import com.mwigzell.places.R;
 import com.mwigzell.places.dagger.Injection;
-import com.mwigzell.places.data.LocationService;
 import com.mwigzell.places.model.Place;
 import com.mwigzell.places.model.Type;
 import com.mwigzell.places.network.NetworkService;
 import com.mwigzell.places.redux.ActionCreator;
-import com.mwigzell.places.redux.AppAction;
 import com.mwigzell.places.redux.AppState;
-import com.mwigzell.places.redux.original.Store;
-import com.mwigzell.places.redux.original.Subscriber;
-import com.mwigzell.places.redux.original.Subscription;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +27,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-import static android.R.attr.type;
-
 /**
  *
  */
 
 public class PlacesFragment extends BaseFragment {
+    private static final String DEFAULT_LOCATION = "-33.8670522,151.1957362";
+
     @BindView(R.id.emptyList)
     ProgressBar emptyList;
 
@@ -82,29 +73,47 @@ public class PlacesFragment extends BaseFragment {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
-        placesList = new ArrayList<Place>();
+        placesList = new ArrayList<>();
         super.checkResumeLocation();
         adapter = new PlacesViewAdapter(placesList);
         recyclerView.setAdapter(adapter);
     }
 
+    private void updateView() {
+        if (placesList.size() > 0) {
+            adapter.notifyDataSetChanged();
+        } else {
+            Location location = store.getState().location;
+            String loc;
+            if (location != null) {
+                loc = location.getLatitude() + "," + location.getLongitude();
+            } else {
+                loc = DEFAULT_LOCATION;
+            }
+            Type selectedType = store.getState().selectedType;
+            String name = selectedType == null ? "restaurant" : selectedType.name;
+            networkService.getPlaces(loc, "5000", name);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateView();
+    }
+
     @Override
     public void onStateChanged() {
         AppState.States state = store.getState().state;
-        Timber.d("Got state=" + state);
+        //Timber.d("Got state=" + state);
         switch(state) {
             case PLACES_DOWNLOADED:
                 emptyList.setVisibility(View.GONE);
                 placesList.clear();
                 placesList.addAll(store.getState().placeState.places);
-                adapter.notifyDataSetChanged();
+                updateView();
                 break;
             case LOCATION_UPDATED:
-                Location location = store.getState().location;
-                String loc = location.getLatitude() + "," + location.getLongitude();
-                Type selectedType = store.getState().selectedType;
-                String name = selectedType == null ? "restaurant" : selectedType.name;
-                networkService.getPlaces(loc, "5000", name);
                 break;
         }
     }

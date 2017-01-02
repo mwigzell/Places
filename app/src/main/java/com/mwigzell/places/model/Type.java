@@ -23,4 +23,8 @@ public class Type {
         else
             url = null;
     }
+
+    public String toString() {
+        return name;
+    }
 }

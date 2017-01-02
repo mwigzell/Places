@@ -1,6 +1,7 @@
 package com.mwigzell.places;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 
 import com.mwigzell.places.dagger.AppModule;
@@ -11,8 +12,8 @@ import com.mwigzell.places.redux.ActionCreator;
 import com.mwigzell.places.redux.AppAction;
 import com.mwigzell.places.redux.AppReducer;
 import com.mwigzell.places.redux.AppState;
-import com.mwigzell.places.redux.original.Reducer;
-import com.mwigzell.places.redux.original.Store;
+import com.mwigzell.places.redux.jedux.Store.Reducer;
+import com.mwigzell.places.redux.jedux.Store;
 import com.mwigzell.places.redux.original.Subscriber;
 
 import org.junit.Before;
@@ -26,8 +27,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -43,21 +48,28 @@ public class ActionCreatorTest {
     @Inject
     Store<AppAction, AppState> store;
 
+    @Mock
+    Context context;
+
+    @Mock
+    SharedPreferences sharedPreferences;
+
     ActionCreator actionCreator;
 
     public Store<AppAction, AppState> provideStore() {
         List<Reducer<AppAction, AppState>> reducers = new ArrayList<>();
-        store =  Store.create(new AppState(), new AppReducer(reducers));
+        store =  new Store(new AppReducer(reducers), new AppState());
         return store;
     }
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
+        when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
         component = DaggerTestComponent.builder()
-                .appModule(new AppModule(Mockito.mock(Context.class)))
+                .appModule(new AppModule(context))
                 .build();
-        Injection.create(Mockito.mock(Context.class)).setComponent(component);
+        Injection.create(context).setComponent(component);
         component.inject(this);
         store = provideStore();
         actionCreator = new ActionCreator(store);
@@ -69,6 +81,15 @@ public class ActionCreatorTest {
         actionCreator.init();
 
         assertEquals(AppState.States.INIT, store.getState().state);
+        verify(subscriber).onStateChanged();
+    }
+
+    @Test
+    public void testRestart() throws Exception {
+        store.subscribe(subscriber);
+        actionCreator.restart();
+
+        assertEquals(AppState.States.RESTARTED, store.getState().state);
         verify(subscriber).onStateChanged();
     }
 
@@ -142,5 +163,37 @@ public class ActionCreatorTest {
         assertEquals(AppState.States.SELECTED_TYPE, store.getState().state);
         assertEquals(type, store.getState().selectedType);
         verify(subscriber).onStateChanged();
+    }
+
+    @Test
+    public void testCombined() {
+        actionCreator.init();
+        Type type = new Type("a_name an_url");
+        actionCreator.selectType(type);
+        Location location = new Location("fused");
+        actionCreator.locationUpdated(location);
+        List<Type> types = new ArrayList<>();
+        actionCreator.typesLoaded(types);
+        actionCreator.loadTypes();
+        Throwable e = new Exception();
+        actionCreator.getPlacesFailed(e);
+        List<Place> places = new ArrayList<>();
+        actionCreator.placesDownloaded(places);
+        actionCreator.getPlaces();
+
+
+        assertEquals(type, store.getState().selectedType);
+        assertEquals(location, store.getState().location);
+        assertEquals(types, store.getState().types);
+        assertEquals(e, store.getState().lastError);
+        assertEquals(places, store.getState().placeState.places);
+
+        actionCreator.init();
+
+        assertNull(store.getState().selectedType);
+        assertNull(store.getState().location);
+        assertNull(store.getState().types);
+        assertNull(store.getState().lastError);
+        assertNull(store.getState().placeState);
     }
 }

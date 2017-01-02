@@ -4,11 +4,6 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.mwigzell.places.dagger.AppModule;
-import com.mwigzell.places.redux.ActionCreator;
-import com.mwigzell.places.redux.AppAction;
-import com.mwigzell.places.redux.AppState;
-import com.mwigzell.places.redux.original.Store;
-import com.mwigzell.places.redux.original.Subscriber;
 import com.mwigzell.places.util.HttpUtils;
 
 import org.junit.Before;
@@ -18,10 +13,6 @@ import org.junit.runner.RunWith;
 import javax.inject.Inject;
 
 import timber.log.Timber;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
