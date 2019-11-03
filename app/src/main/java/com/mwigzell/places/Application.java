@@ -1,7 +1,5 @@
 package com.mwigzell.places;
 
-import android.support.multidex.MultiDexApplication;
-
 import com.crashlytics.android.Crashlytics;
 import com.mwigzell.places.dagger.Injection;
 import com.mwigzell.places.data.DataService;
@@ -22,8 +20,8 @@ import timber.log.Timber;
  * Created by mwigzell on 12/10/16.
  */
 
-public class Application extends MultiDexApplication implements Subscriber {
-    public static final String GOOGLE_PLACES_API_KEY = "AIzaSyCfiVBYgyTtCJUKziOBx7H367ovTkpr6JE";
+public class Application extends android.app.Application implements Subscriber {
+    public static final String GOOGLE_PLACES_API_KEY = "AIzaSyDYvfBnjsQttjubdoLoyj5IBvf5_x86DtI";
 
     @Inject
     Store<AppAction, AppState> store;

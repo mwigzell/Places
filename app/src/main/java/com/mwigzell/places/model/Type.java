@@ -1,7 +1,5 @@
 package com.mwigzell.places.model;
 
-import static junit.framework.Assert.assertTrue;
-
 /**
  * Represent a Google Type representation read from file.
  * The file consists of a line per type with <type>\b<url>
