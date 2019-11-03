@@ -9,8 +9,14 @@
                 android:paddingTop="@dimen/activity_vertical_margin"
                 tools:context=".activities.MainActivity">
 
+    <TextView
+        android:id="@+id/noResults"
+        android:text="@string/no_results"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
     <ProgressBar
-        android:id="@+id/emptyList"
+        android:id="@+id/progressSpinner"
         style="?android:attr/progressBarStyleLarge"
         android:indeterminateDrawable="@drawable/progress"
         android:layout_width="wrap_content"

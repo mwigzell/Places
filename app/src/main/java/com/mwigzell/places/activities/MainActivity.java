@@ -97,6 +97,20 @@ public class MainActivity extends AppCompatActivity implements Subscriber {
                 });
     }
 
+    private void replaceFragment(Class fragmentClass) {
+        Fragment fragment = null;
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
+        // Insert the fragment by replacing any existing fragment
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+    }
+
     private void selectDrawerItem(MenuItem menuItem) {
         // Create a new fragment and specify the fragment to show based on nav item clicked
         Fragment fragment = null;
@@ -115,15 +129,7 @@ public class MainActivity extends AppCompatActivity implements Subscriber {
                 fragmentClass = PlacesFragment.class;
         }
 
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        replaceFragment(fragmentClass);
 
         // Highlight the selected item has been done by NavigationView
         menuItem.setChecked(true);
@@ -142,12 +148,22 @@ public class MainActivity extends AppCompatActivity implements Subscriber {
         return super.onOptionsItemSelected(item);
     }
 
+    public void moveToPlaces() {
+        replaceFragment(PlacesFragment.class);
+    }
+
+    public void moveToTypes() {
+        replaceFragment(TypesFragment.class);
+    }
+
     @Override
     public void onStateChanged() {
         AppState.States state = store.getState().state();
         //Timber.d("Got state=" + state);
         switch(state) {
-
+            case SELECTED_TYPE:
+                moveToPlaces();
+                break;
         }
     }
 
@@ -164,4 +180,6 @@ public class MainActivity extends AppCompatActivity implements Subscriber {
 
         subscription.unsubscribe();
     }
+
+
 }

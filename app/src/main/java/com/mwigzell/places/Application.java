@@ -29,13 +29,13 @@ public class Application extends MultiDexApplication implements Subscriber {
     Store<AppAction, AppState> store;
 
     @Inject
-    NetworkService networkService;
-
-    @Inject
-    DataService dataService;
-
-    @Inject
     ActionCreator actionCreator;
+
+    @Inject
+    NetworkService networkService; // ensure construction
+
+    @Inject
+    DataService dataService; // ensure construction
 
     @Override
     public void onCreate() {

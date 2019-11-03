@@ -29,8 +29,8 @@ import timber.log.Timber;
  */
 
 public class TypesFragment extends BaseFragment {
-    @BindView(R.id.emptyList)
-    ProgressBar emptyList;
+    @BindView(R.id.progressSpinner)
+    ProgressBar progressSpnner;
 
     @BindView(R.id.myList)
     RecyclerView recyclerView;
@@ -60,7 +60,7 @@ public class TypesFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         Timber.d("onActivityCreated");
 
-        emptyList.setVisibility(View.VISIBLE);
+        progressSpnner.setVisibility(View.VISIBLE);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -77,7 +77,7 @@ public class TypesFragment extends BaseFragment {
         //Timber.d("Got state=" + state);
         switch(state) {
             case TYPES_LOADED:
-                emptyList.setVisibility(View.GONE);
+                progressSpnner.setVisibility(View.GONE);
                 typesList.clear();
                 typesList.addAll(store.getState().types());
                 adapter.notifyDataSetChanged();

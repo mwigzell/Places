@@ -62,6 +62,8 @@ public class TypesViewAdapter extends RecyclerView.Adapter<TypesViewAdapter.List
                     .centerCrop()
                     .crossFade()
                     .into(viewHolder.imageView);
+        } else {
+            viewHolder.imageView.setImageResource(0);
         }
         viewHolder.itemView.setActivated(selectedItems.get(position, false));
     }
