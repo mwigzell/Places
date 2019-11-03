@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.mwigzell.places.R;
 import com.mwigzell.places.dagger.Injection;
@@ -34,8 +35,11 @@ import timber.log.Timber;
 public class PlacesFragment extends BaseFragment {
     public static final String DEFAULT_LOCATION = "-33.8670522,151.1957362";
 
-    @BindView(R.id.emptyList)
-    ProgressBar emptyList;
+    @BindView(R.id.noResults)
+    TextView noResults;
+
+    @BindView(R.id.progressSpinner)
+    ProgressBar progressSpinner;
 
     @BindView(R.id.myList)
     RecyclerView recyclerView;
@@ -68,7 +72,8 @@ public class PlacesFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         Timber.d("onActivityCreated");
 
-        emptyList.setVisibility(View.VISIBLE);
+        noResults.setVisibility(View.GONE);
+        progressSpinner.setVisibility(View.VISIBLE);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
@@ -95,7 +100,10 @@ public class PlacesFragment extends BaseFragment {
 
     private void updateView() {
         if (placesList.size() > 0) {
+            noResults.setVisibility(View.GONE);
             adapter.notifyDataSetChanged();
+        } else {
+            noResults.setVisibility(View.VISIBLE);
         }
     }
 
@@ -111,10 +119,13 @@ public class PlacesFragment extends BaseFragment {
         //Timber.d("Got state=" + state);
         switch(state) {
             case PLACES_DOWNLOADED:
-                emptyList.setVisibility(View.GONE);
+                progressSpinner.setVisibility(View.GONE);
                 placesList.clear();
                 placesList.addAll(store.getState().placeState().places);
                 updateView();
+                break;
+            case GET_PLACES_FAILED:
+                noResults.setVisibility(View.VISIBLE);
                 break;
             case LOCATION_UPDATED:
                 break;
