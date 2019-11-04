@@ -60,9 +60,9 @@ public class NetworkService implements Subscriber {
                     }
 
                     @Override
-                    public void onNext(PlacesResponse places) {
-                        Timber.d("Got places");
-                        actionCreator.placesDownloaded(places.results);
+                    public void onNext(PlacesResponse response) {
+                        Timber.d("Got places status:" + response.getStatus());
+                        actionCreator.placesDownloaded(response.getResults());
                     }
                 });
     }
