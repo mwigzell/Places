@@ -22,18 +22,17 @@ public class PersistanceController implements Store.Middleware<Action, State> {
     }
 
     public AppState getSavedState() {
-        /*if (mPreferences.contains("data")) {
+        if (mPreferences.contains("data")) {
             String json = mPreferences.getString("data", "");
             return mGson.fromJson(json, ImmutableAppState.class);
-            //return mGson.fromJson(json, AppState.class);
-        }*/
+        }
         return null;
     }
 
     @Override
     public void dispatch(Store<Action, State> store, Action action, Store.NextDispatcher<Action> next) {
         next.dispatch(action);
-        /*String json = mGson.toJson(store.getState());
-        mPreferences.edit().putString("data", json).apply();*/
+        String json = mGson.toJson(store.getState());
+        mPreferences.edit().putString("data", json).apply();
     }
 }

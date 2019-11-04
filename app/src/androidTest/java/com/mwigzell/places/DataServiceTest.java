@@ -26,7 +26,7 @@ public class DataServiceTest {
     @Before
     public void setup() {
         AndroidTestComponent component = DaggerAndroidTestComponent.builder()
-                .appModule(new AppModule(InstrumentationRegistry.getTargetContext()))
+                .appModule(new AppModule(InstrumentationRegistry.getInstrumentation().getTargetContext()))
                 .build();
         component.inject(this);
 

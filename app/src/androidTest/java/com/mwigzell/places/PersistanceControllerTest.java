@@ -40,7 +40,7 @@ public class PersistanceControllerTest {
     @Before
     public void setup() {
         //MockitoAnnotations.initMocks(this);
-        persistanceController = new PersistanceController(InstrumentationRegistry.getTargetContext());
+        persistanceController = new PersistanceController(InstrumentationRegistry.getInstrumentation().getTargetContext());
     }
 
     @Test
