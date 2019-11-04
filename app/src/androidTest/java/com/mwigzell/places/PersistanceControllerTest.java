@@ -1,8 +1,8 @@
 package com.mwigzell.places;
 
 import android.location.Location;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.mwigzell.places.model.Place;
 import com.mwigzell.places.model.Type;
@@ -12,15 +12,12 @@ import com.mwigzell.places.redux.AppState;
 import com.mwigzell.places.redux.ImmutableAppState;
 import com.mwigzell.places.redux.PersistanceController;
 import com.mwigzell.places.redux.PlaceState;
-import com.mwigzell.places.redux.jedux.Action;
 import com.mwigzell.places.redux.jedux.Logger;
 import com.mwigzell.places.redux.jedux.Store;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;

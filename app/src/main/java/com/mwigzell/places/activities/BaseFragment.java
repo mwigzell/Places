@@ -2,7 +2,7 @@ package com.mwigzell.places.activities;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.mwigzell.places.data.LocationService;
 import com.mwigzell.places.redux.AppAction;

@@ -8,10 +8,10 @@ android {
     defaultConfig {
         applicationId "com.mwigzell.places"
         minSdkVersion 18
-        targetSdkVersion 25
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         //multiDexEnabled true
     }
@@ -41,22 +41,24 @@ android {
         disable 'TimberArgCount'
         warning 'InvalidPackage'
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    //compile 'com.android.support:multidex:1.0.3'
     implementation 'com.google.android.gms:play-services-ads:9.4.0'
     implementation 'com.google.android.gms:play-services-location:9.4.0'
-    //implementation 'com.google.firebase:firebase-core:9.4.0'
-    implementation 'com.android.support:appcompat-v7:25.0.1'
-    implementation "com.android.support:design:25.0.1"
-    implementation "com.android.support:recyclerview-v7:25.0.1"
-    implementation "com.android.support:percent:25.0.1"
-    implementation "com.android.support:support-vector-drawable:25.0.1" // VectorDrawableCompat
-    implementation "com.android.support:animated-vector-drawable:25.0.1" // AnimatedVectorDrawableCompat
-    implementation "com.android.support:transition:25.0.1"
-
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.percentlayout:percentlayout:1.0.0'
+    implementation 'androidx.vectordrawable:vectordrawable:1.0.0' // VectorDrawableCompat
+    implementation 'androidx.vectordrawable:vectordrawable-animated:1.0.0'
+    implementation 'androidx.transition:transition:1.0.0'
     annotationProcessor "com.google.dagger:dagger-compiler:2.7"
     implementation "com.google.dagger:dagger:2.7"
     compileOnly 'javax.annotation:jsr250-api:1.0'
@@ -74,22 +76,22 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
     implementation 'io.reactivex:rxandroid:1.2.1'
     implementation 'io.reactivex:rxjava:1.2.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
-    implementation 'com.jakewharton:butterknife:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
+    implementation 'com.jakewharton:butterknife:10.2.0'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
 
     androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:2.7"
-    androidTestImplementation 'com.android.support:support-annotations:25.0.1'
-    androidTestImplementation 'com.android.support.test:runner:0.5'
+    androidTestImplementation 'androidx.annotation:annotation:1.0.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     // Set this dependency to use JUnit 4 rules
-    androidTestImplementation 'com.android.support.test:rules:0.5'
+    androidTestImplementation 'androidx.test:rules:1.1.1'
     // Set this dependency to build and run Espresso tests
     //androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     // Set this dependency to build and run UI Automator tests
-    androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     // Mockito unit test framework
     //androidTestImplementation "com.google.dexmaker:dexmaker:1.0"
     //androidTestImplementation "com.google.dexmaker:dexmaker-mockito:1.0"
