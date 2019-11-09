@@ -1,5 +1,6 @@
 package com.mwigzell.places.activities
 
+import android.content.Context
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -9,39 +10,43 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 
 import com.mwigzell.places.R
-import com.mwigzell.places.dagger.Injection
-import com.mwigzell.places.model.Type
 import com.mwigzell.places.redux.ActionCreator
 import com.mwigzell.places.redux.AppState
-
-import java.util.ArrayList
 
 import javax.inject.Inject
 
 import butterknife.BindView
 import butterknife.ButterKnife
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.support.AndroidSupportInjection
 import timber.log.Timber
 
 /**
  * Show types in a list
  */
 
-class TypesFragment : BaseFragment, HasSupportFragmentInjector {
+class TypesFragment : BaseFragment() {
+
     @BindView(R.id.progressSpinner)
-    internal var progressSpnner: ProgressBar? = null
+    lateinit internal var progressSpnner: ProgressBar
 
     @BindView(R.id.myList)
-    internal var recyclerView: RecyclerView? = null
+    lateinit internal var recyclerView: RecyclerView
 
     @Inject
-    internal var actionCreator: ActionCreator? = null
+    lateinit internal var actionCreator: ActionCreator
 
     @Inject
-    internal var adapter: TypesViewAdapter
+    lateinit internal var adapter: TypesViewAdapter
 
-    init {
-        Injection.instance().getComponent().inject(this)
+    /*@Inject lateinit var viewModelFactory: SimpleFragmentActivityViewModelFactory
+    private val viewModel: SimpleFragmentActivityViewModel by lazy {
+        ViewModelProviders.of(activity!!, viewModelFactory)
+                .get(SimpleFragmentActivityViewModel::class.java)
+    }*/
+
+    override fun onAttach(context: Context) {
+        AndroidSupportInjection.inject(this)
+        super.onAttach(context)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

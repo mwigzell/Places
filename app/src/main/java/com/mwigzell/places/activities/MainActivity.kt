@@ -25,19 +25,27 @@ import butterknife.ButterKnife
 import dagger.Module
 import dagger.Provides
 import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.ContributesAndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
 
 // We can define this anywhere we like, but it's convenient to include
 // in the same file as the class being injected
 // An object because I want to provide a static function, and it's Kotlin
-@Module
+/*@Module
 object MainActivityModule {
     // static because dagger can call this method like MainActivityModule.provideText(),
     // rather than new MainActivityModule().provideText()
     @Provides
     @JvmStatic fun provideText() = "Why, hello there!"
+}*/
+
+@Module abstract class MainActivityModule {
+    @ContributesAndroidInjector abstract fun typesFragment(): TypesFragment
 }
 
-class MainActivity : AppCompatActivity(), Subscriber {
+class MainActivity : AppCompatActivity(), Subscriber, HasSupportFragmentInjector {
     @BindView(R.id.drawer_layout)
     lateinit internal var mDrawer: DrawerLayout
 
@@ -56,6 +64,15 @@ class MainActivity : AppCompatActivity(), Subscriber {
     lateinit internal var store: Store<AppAction<Any>, AppState>
 
     lateinit internal var subscription: Subscription
+
+    @Inject lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
+
+    /*@Inject lateinit var viewModelFactory: MainActivityViewModelFactory
+    private val viewModel: MainActivityViewModel by lazy {
+        ViewModelProviders.of(this, viewModelFactory)
+                .get(MainActivityViewModel::class.java)
+    }*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)

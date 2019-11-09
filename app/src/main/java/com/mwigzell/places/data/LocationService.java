@@ -34,7 +34,7 @@ public class LocationService implements Subscriber,
         LocationListener {
 
     @Inject
-    Store<AppAction, AppState> store;
+    Store<AppAction<Object>, AppState> store;
 
     @Inject
     Context context;

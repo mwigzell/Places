@@ -8,6 +8,8 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class ScreenBindingModule {
     //@ActivityScoped // optional
-    @ContributesAndroidInjector(modules = [MainActivityModule::class])
+    @ContributesAndroidInjector(modules = [
+        MainActivityModule::class
+    ])
     abstract fun mainActivity(): MainActivity
 }

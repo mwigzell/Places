@@ -23,7 +23,7 @@ public abstract class BaseFragment extends Fragment implements Subscriber {
     private static final int REQUEST_CODE = 1;
 
     @Inject
-    Store<AppAction, AppState> store;
+    Store<AppAction<Object>, AppState> store;
 
     @Inject
     LocationService locationService;

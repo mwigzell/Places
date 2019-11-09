@@ -45,9 +45,6 @@ open class PlacesApplication : Application(), Subscriber, HasActivityInjector {
     lateinit internal var actionCreator: ActionCreator
 
     @Inject
-    lateinit internal var networkService: NetworkService
-
-    @Inject
     lateinit internal var dataService: DataService
 
     override fun onCreate() {
@@ -61,13 +58,13 @@ open class PlacesApplication : Application(), Subscriber, HasActivityInjector {
         Log.init(this)
         Timber.d("Hi ho!, its off to work we go!!!")
 
-        /*store!!.subscribe(this)
+        store!!.subscribe(this)
 
         if (store!!.state.state() == AppState.States.INIT) {
             actionCreator!!.init()
         } else {
             actionCreator!!.restart()
-        }*/
+        }
     }
 
     private fun initDagger() {
