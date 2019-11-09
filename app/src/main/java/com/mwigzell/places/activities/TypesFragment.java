@@ -22,13 +22,14 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.support.HasSupportFragmentInjector;
 import timber.log.Timber;
 
 /**
  * Show types in a list
  */
 
-public class TypesFragment extends BaseFragment {
+public class TypesFragment extends BaseFragment, HasSupportFragmentInjector {
     @BindView(R.id.progressSpinner)
     ProgressBar progressSpnner;
 
@@ -38,9 +39,8 @@ public class TypesFragment extends BaseFragment {
     @Inject
     ActionCreator actionCreator;
 
+    @Inject
     TypesViewAdapter adapter;
-
-    private static List<Type> typesList;
 
     public TypesFragment() {
         Injection.instance().getComponent().inject(this);
@@ -65,9 +65,8 @@ public class TypesFragment extends BaseFragment {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
-        typesList = new ArrayList<>();
         actionCreator.loadTypes();
-        adapter = new TypesViewAdapter(typesList);
+        adapter = new TypesViewAdapter();
         recyclerView.setAdapter(adapter);
     }
 
@@ -78,9 +77,7 @@ public class TypesFragment extends BaseFragment {
         switch(state) {
             case TYPES_LOADED:
                 progressSpnner.setVisibility(View.GONE);
-                typesList.clear();
-                typesList.addAll(store.getState().types());
-                adapter.notifyDataSetChanged();
+                adapter.setItems(store.getState().types());
                 break;
         }
     }

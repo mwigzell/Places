@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
+
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
 //apply plugin: 'jacoco'
 apply plugin: 'io.fabric'
 
@@ -60,14 +63,23 @@ dependencies {
     implementation 'androidx.vectordrawable:vectordrawable:1.0.0' // VectorDrawableCompat
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.0.0'
     implementation 'androidx.transition:transition:1.0.0'
-    annotationProcessor "com.google.dagger:dagger-compiler:2.7"
-    implementation "com.google.dagger:dagger:2.7"
+
+    /* Dagger2 - We are going to use dagger.android which includes
+     * support for Activity and fragment injection so we need to include
+     * the following dependencies */
+    implementation 'com.google.dagger:dagger-android:2.17'
+    implementation 'com.google.dagger:dagger-android-support:2.17'
+    kapt 'com.google.dagger:dagger-android-processor:2.17'
+    /* Dagger2 - default dependency */
+    kapt 'com.google.dagger:dagger-compiler:2.17'
+
     compileOnly 'javax.annotation:jsr250-api:1.0'
     implementation 'com.jakewharton.timber:timber:4.3.1'
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true;
     }
     implementation 'org.immutables:gson:2.1.14'
+    kapt 'org.immutables:value:2.1.14'
     annotationProcessor 'org.immutables:value:2.1.14'
     compileOnly 'org.immutables:value:2.1.14'
     implementation 'com.google.guava:guava:18.0'
@@ -77,11 +89,11 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
     implementation 'io.reactivex:rxandroid:1.2.1'
     implementation 'io.reactivex:rxjava:1.2.1'
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
+    kapt 'com.jakewharton:butterknife-compiler:10.2.0'
     implementation 'com.jakewharton:butterknife:10.2.0'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
 
-    androidTestAnnotationProcessor "com.google.dagger:dagger-compiler:2.7"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:2.17"
     androidTestImplementation 'androidx.annotation:annotation:1.0.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     // Set this dependency to use JUnit 4 rules
@@ -104,7 +116,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.+'
-    testAnnotationProcessor "com.google.dagger:dagger-compiler:2.7"
+    kaptTest "com.google.dagger:dagger-compiler:2.7"
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

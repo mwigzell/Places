@@ -2,14 +2,10 @@ package com.mwigzell.places.util;
 
 import android.content.Context;
 
-import com.mwigzell.places.Application;
 import com.mwigzell.places.BuildConfig;
 import com.mwigzell.places.R;
 
-import java.lang.reflect.Field;
 import java.util.Locale;
-
-import javax.inject.Inject;
 
 import timber.log.Timber;
 

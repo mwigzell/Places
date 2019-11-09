@@ -24,10 +24,10 @@ import static com.mwigzell.places.redux.AppAction.Actions.TYPES_LOADED;
  */
 
 public class ActionCreator {
-    private final Store<AppAction, AppState> store;
+    private final Store<AppAction<Object>, AppState> store;
 
     @Inject
-    public ActionCreator(Store<AppAction, AppState> store) {this.store = store;}
+    public ActionCreator(Store<AppAction<Object>, AppState> store) {this.store = store;}
 
     public void init() {
         store.dispatch(new AppAction(INIT));

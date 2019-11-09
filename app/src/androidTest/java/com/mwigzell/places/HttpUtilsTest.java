@@ -47,7 +47,7 @@ public class HttpUtilsTest {
         String restaurantpic = "https://maps.googleapis.com/maps/api/place/photo?" +
                 "maxwidth=400" +
                 "&photoreference=" +photoreference +
-                "&key=" + Application.GOOGLE_PLACES_API_KEY;
+                "&key=" + PlacesApplication.Companion.getGOOGLE_PLACES_API_KEY();
 
         Timber.d("Loading restaurantpic=" + restaurantpic);
         utils.dumpUrl(restaurantpic);

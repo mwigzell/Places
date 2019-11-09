@@ -6,6 +6,7 @@ import android.content.Context;
 /**
  */
 
+/*
 public class Injection {
     private AppComponent appComponent;
     private static Injection instance;
@@ -32,4 +33,4 @@ public class Injection {
 
     public void setComponent(AppComponent component) { appComponent = component; }
 
-}
+}*/

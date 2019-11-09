@@ -3,7 +3,6 @@ package com.mwigzell.places.util;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import com.mwigzell.places.dagger.Injection;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -21,7 +20,6 @@ public class AndroidServices {
 
     @Inject
     public AndroidServices() {
-        Injection.instance().getComponent().inject(this);
     }
 
     public ConnectivityManager getConnectivityManager() { return (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE); }

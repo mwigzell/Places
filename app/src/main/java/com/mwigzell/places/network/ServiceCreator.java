@@ -3,8 +3,7 @@ package com.mwigzell.places.network;
 
 import android.content.Context;
 
-import com.mwigzell.places.Application;
-import com.mwigzell.places.dagger.Injection;
+import com.mwigzell.places.PlacesApplication;
 import com.mwigzell.places.model.PlacesResponse;
 import com.mwigzell.places.redux.ActionCreator;
 import com.mwigzell.places.util.AndroidServices;
@@ -16,12 +15,13 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+//import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjection;
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -53,7 +53,7 @@ public class ServiceCreator {
 
     @Inject
     public ServiceCreator() {
-        Injection.instance().getComponent().inject(this);
+
     }
 
     public <S> S createService(Class<S> serviceClass) {

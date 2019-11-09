@@ -4,7 +4,6 @@ package com.mwigzell.places.data;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.mwigzell.places.dagger.Injection;
 import com.mwigzell.places.model.Type;
 import com.mwigzell.places.redux.ActionCreator;
 import com.mwigzell.places.redux.AppAction;
@@ -30,7 +29,7 @@ public class DataService implements Subscriber {
     Exception lastError;
 
     @Inject
-    Store<AppAction, AppState> store;
+    Store<AppAction<Object>, AppState> store;
 
     @Inject
     ActionCreator actionCreator;
@@ -40,7 +39,6 @@ public class DataService implements Subscriber {
 
     @Inject
     public DataService() {
-        Injection.instance().getComponent().inject(this);
         store.subscribe(this);
     }
 

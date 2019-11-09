@@ -1,7 +1,7 @@
 package com.mwigzell.places.network;
 
-import com.mwigzell.places.Application;
-import com.mwigzell.places.dagger.Injection;
+import com.mwigzell.places.PlacesApplication;
+//import com.mwigzell.places.dagger.Injection;
 import com.mwigzell.places.model.PlacesResponse;
 import com.mwigzell.places.redux.ActionCreator;
 import com.mwigzell.places.redux.AppAction;
@@ -26,13 +26,12 @@ public class NetworkService implements Subscriber {
     ActionCreator actionCreator;
 
     @Inject
-    Store<AppAction, AppState> store;
+    Store<AppAction<Object>, AppState> store;
 
     private ServiceCreator.PlacesClient client;
 
     @Inject
     public NetworkService() {
-        Injection.instance().getComponent().inject(this);
         store.subscribe(this);
         client = serviceCreator.createService(ServiceCreator.PlacesClient.class);
     }
@@ -44,7 +43,7 @@ public class NetworkService implements Subscriber {
     public void getPlaces(String location, String radius, String type) {
         Timber.d("Get places radius=" + radius + " type=" + type);
 
-        client.getPlaces(location, radius, type, Application.GOOGLE_PLACES_API_KEY)
+        client.getPlaces(location, radius, type, PlacesApplication.Companion.getGOOGLE_PLACES_API_KEY())
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new rx.Subscriber<PlacesResponse>() {

@@ -3,9 +3,6 @@ package com.mwigzell.places.util;
 import android.content.Context;
 import android.os.Environment;
 
-import com.mwigzell.places.Application;
-import com.mwigzell.places.dagger.Injection;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -24,9 +21,7 @@ public class FileUtils {
     Context context;
 
     @Inject
-    public FileUtils() {
-        Injection.instance().getComponent().inject(this);
-    }
+    public FileUtils() { }
 
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();

@@ -28,7 +28,7 @@ import dagger.Provides;
 @Module
 public class AppModule {
     private Context context;
-    private Store<AppAction, AppState> store;
+    private Store<AppAction<Object>, AppState> store;
     private PersistanceController persistanceController;
     private AppState appState;
 
@@ -53,10 +53,8 @@ public class AppModule {
                 .build();
     }
 
-    @Provides @Singleton Context provideApplicationContext() { return context; }
-
     @Provides @Singleton
-    public Store<AppAction, AppState> provideStore() {
+    public Store<AppAction<Object>, AppState> provideStore() {
         List<Reducer<AppAction, AppState>> reducers = new ArrayList<>();
 
         store =  new Store(new AppReducer(reducers), appState, new Logger("Places"), persistanceController);

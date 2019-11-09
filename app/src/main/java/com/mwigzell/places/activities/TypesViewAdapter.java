@@ -11,10 +11,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.mwigzell.places.R;
-import com.mwigzell.places.dagger.Injection;
 import com.mwigzell.places.model.Type;
 import com.mwigzell.places.redux.ActionCreator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -32,13 +32,15 @@ public class TypesViewAdapter extends RecyclerView.Adapter<TypesViewAdapter.List
     private List<Type> items;
     private SparseBooleanArray selectedItems;
 
-    TypesViewAdapter(@NonNull List<Type> modelData) {
-        /*if (modelData == null) {
-            throw new IllegalArgumentException("modelData must not be null");
-        }*/
-        Injection.instance().getComponent().inject(this);
-        items = modelData;
+    @Inject
+    TypesViewAdapter() {
+        items = new ArrayList<>();
         selectedItems = new SparseBooleanArray();
+    }
+
+    public void setItems(List<Type> items) {
+        this.items = items;
+        notifyDataSetChanged();
     }
 
     @Override

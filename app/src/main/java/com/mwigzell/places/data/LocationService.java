@@ -14,7 +14,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.mwigzell.places.dagger.Injection;
 import com.mwigzell.places.redux.ActionCreator;
 import com.mwigzell.places.redux.AppAction;
 import com.mwigzell.places.redux.AppState;
@@ -57,7 +56,6 @@ public class LocationService implements Subscriber,
 
     @Inject
     public LocationService() {
-        Injection.instance().getComponent().inject(this);
         mSubscription = store.subscribe(this);
     }
 
