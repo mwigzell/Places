@@ -61,14 +61,14 @@ class TypesFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         Timber.d("onActivityCreated")
 
-        progressSpnner!!.visibility = View.VISIBLE
-        recyclerView!!.setHasFixedSize(true)
+        progressSpnner.visibility = View.VISIBLE
+        recyclerView.setHasFixedSize(true)
         val llm = LinearLayoutManager(activity)
         llm.orientation = LinearLayoutManager.VERTICAL
-        recyclerView!!.layoutManager = llm
-        actionCreator!!.loadTypes()
-        adapter = TypesViewAdapter()
-        recyclerView!!.adapter = adapter
+        recyclerView.layoutManager = llm
+        actionCreator.loadTypes()
+        adapter = TypesViewAdapter(actionCreator)
+        recyclerView.adapter = adapter
     }
 
     override fun onStateChanged() {
@@ -76,7 +76,7 @@ class TypesFragment : BaseFragment() {
         //Timber.d("Got state=" + state);
         when (state) {
             AppState.States.TYPES_LOADED -> {
-                progressSpnner!!.visibility = View.GONE
+                progressSpnner.visibility = View.GONE
                 adapter.setItems(store.state.types())
             }
         }

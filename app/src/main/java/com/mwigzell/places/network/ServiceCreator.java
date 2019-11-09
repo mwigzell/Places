@@ -3,20 +3,13 @@ package com.mwigzell.places.network;
 
 import android.content.Context;
 
-import com.mwigzell.places.PlacesApplication;
 import com.mwigzell.places.model.PlacesResponse;
-import com.mwigzell.places.redux.ActionCreator;
 import com.mwigzell.places.util.AndroidServices;
 import com.mwigzell.places.util.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
-
-//import dagger.android.AndroidInjection;
-import dagger.android.AndroidInjection;
 import okhttp3.Cache;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -33,9 +26,6 @@ import timber.log.Timber;
 public class ServiceCreator {
     public static final String API_BASE_URL = "https://maps.googleapis.com";
     public static String RETROFIT_CACHE = "RETROFIT_CACHE";
-    
-    @Inject
-    ActionCreator mActionCreator;
 
     @Inject
     FileUtils fileUtils;
@@ -161,9 +151,11 @@ public class ServiceCreator {
 
     public interface PlacesClient {
         @GET("/maps/api/place/nearbysearch/json")
-        Observable<PlacesResponse> getPlaces(@Query("location") String location, @Query("radius") String radius,
-                                             @Query("types") String types, @Query("key") String key);
-
+        Observable<PlacesResponse> getPlaces(
+                @Query("location") String location,
+                @Query("radius") String radius,
+                @Query("types") String types,
+                @Query("key") String key);
     }
 
 }

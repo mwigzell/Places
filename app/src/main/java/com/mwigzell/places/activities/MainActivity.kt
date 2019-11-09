@@ -43,6 +43,7 @@ object MainActivityModule {
 
 @Module abstract class MainActivityModule {
     @ContributesAndroidInjector abstract fun typesFragment(): TypesFragment
+    @ContributesAndroidInjector abstract fun placesFragment(): PlacesFragment
 }
 
 class MainActivity : AppCompatActivity(), Subscriber, HasSupportFragmentInjector {
