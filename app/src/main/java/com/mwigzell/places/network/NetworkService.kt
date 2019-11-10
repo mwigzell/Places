@@ -7,7 +7,7 @@ import com.mwigzell.places.redux.ActionCreator
 import com.mwigzell.places.redux.AppAction
 import com.mwigzell.places.redux.AppState
 import com.mwigzell.places.redux.jedux.Store
-import com.mwigzell.places.redux.original.Subscriber
+import com.mwigzell.places.redux.jedux.Subscriber
 
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -43,7 +43,7 @@ constructor(private val serviceCreator: ServiceCreator,
 
                     override fun onError(e: Throwable) {
                         Timber.e(e, "  error with exception")
-                        actionCreator!!.getPlacesFailed(e)
+                        actionCreator!!.getPlacesFailed(e.toString())
                     }
 
                     override fun onNext(response: PlacesResponse) {

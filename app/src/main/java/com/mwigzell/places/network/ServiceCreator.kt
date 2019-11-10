@@ -116,7 +116,6 @@ constructor(private val context: Context,
             } catch (e: IOException) {
                 Timber.e(e, "%s - Exception with message: %s", RETROFIT_CACHE, e.message)
             }
-
         }
     }
 

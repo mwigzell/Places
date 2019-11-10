@@ -1,4 +1,4 @@
-package com.mwigzell.places.redux.original;
+package com.mwigzell.places.redux.jedux;
 
 import java.util.List;
 

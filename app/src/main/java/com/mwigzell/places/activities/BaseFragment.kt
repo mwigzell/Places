@@ -8,8 +8,8 @@ import com.mwigzell.places.data.LocationService
 import com.mwigzell.places.redux.AppAction
 import com.mwigzell.places.redux.AppState
 import com.mwigzell.places.redux.jedux.Store
-import com.mwigzell.places.redux.original.Subscriber
-import com.mwigzell.places.redux.original.Subscription
+import com.mwigzell.places.redux.jedux.Subscriber
+import com.mwigzell.places.redux.jedux.Subscription
 
 import javax.inject.Inject
 
@@ -22,10 +22,10 @@ import timber.log.Timber
 abstract class BaseFragment : Fragment(), Subscriber {
 
     @Inject
-    internal var store: Store<AppAction<Any>, AppState>? = null
+    lateinit internal var store: Store<AppAction<Any>, AppState>
 
     @Inject
-    internal var locationService: LocationService? = null
+    lateinit internal var locationService: LocationService
 
     lateinit internal var subscription: Subscription
 

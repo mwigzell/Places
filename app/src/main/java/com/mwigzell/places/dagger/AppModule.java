@@ -8,7 +8,7 @@ import com.mwigzell.places.redux.AppAction;
 import com.mwigzell.places.redux.AppReducer;
 import com.mwigzell.places.redux.AppState;
 import com.mwigzell.places.redux.ImmutableAppState;
-import com.mwigzell.places.redux.PersistanceController;
+import com.mwigzell.places.redux.PersistenceController;
 import com.mwigzell.places.redux.PlaceState;
 import com.mwigzell.places.redux.jedux.Logger;
 import com.mwigzell.places.redux.jedux.Store.Reducer;
@@ -29,27 +29,28 @@ import dagger.Provides;
 public class AppModule {
     private Context context;
     private Store<AppAction<Object>, AppState> store;
-    private PersistanceController persistanceController;
+    private PersistenceController persistenceController;
     private AppState appState;
 
     public AppModule(Context context) {
         this.context = context;
-        persistanceController = new PersistanceController(context);
-        appState = persistanceController.getSavedState();
+        persistenceController = new PersistenceController(context);
+        appState = persistenceController.getSavedState();
         if (appState == null) {
             appState = provideAppState();
         }
     }
 
     // need for testing, normally not for running except first time
-    @Provides AppState provideAppState() {
+    @Provides
+    public AppState provideAppState() {
         return ImmutableAppState.builder()
                 .placeState(new PlaceState())
                 .state(AppState.States.INIT)
-                .lastError(new UnsupportedOperationException())
+                .lastError("")
                 .types(new ArrayList<Type>())
                 .location(new Location("init"))
-                .selectedType(new Type("init_name init_url"))
+                .selectedPosition(new Integer(0))
                 .build();
     }
 
@@ -57,7 +58,7 @@ public class AppModule {
     public Store<AppAction<Object>, AppState> provideStore() {
         List<Reducer<AppAction, AppState>> reducers = new ArrayList<>();
 
-        store =  new Store(new AppReducer(reducers), appState, new Logger("Places"), persistanceController);
+        store =  new Store(new AppReducer(reducers), appState, new Logger("Places"), persistenceController);
         return store;
     }
 }

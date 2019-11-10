@@ -46,6 +46,7 @@ class PlacesFragment : BaseFragment() {
     @Inject
     lateinit internal var networkService: NetworkService
 
+    @Inject
     lateinit internal var adapter: PlacesViewAdapter
 
     override fun onAttach(context: Context) {
@@ -71,9 +72,7 @@ class PlacesFragment : BaseFragment() {
         val llm = LinearLayoutManager(activity)
         llm.orientation = LinearLayoutManager.VERTICAL
         recyclerView!!.layoutManager = llm
-        placesList = ArrayList()
         super.checkResumeLocation()
-        adapter = PlacesViewAdapter(placesList)
         recyclerView!!.adapter = adapter
         fetchPlaces()
     }
@@ -86,15 +85,16 @@ class PlacesFragment : BaseFragment() {
         } else {
             loc = DEFAULT_LOCATION
         }
-        val selectedType = store.state.selectedType()
-        val name = if (selectedType == null) "restaurant" else selectedType.name
+        var i = store.state.selectedPosition()
+        var name = "restaurant"
+        if (i < store.state.types().size)
+            name = store.state.types().get(i).name
         networkService!!.getPlaces(loc, "5000", name)
     }
 
     private fun updateView() {
-        if (placesList!!.size > 0) {
+        if (adapter.itemCount > 0) {
             noResults!!.visibility = View.GONE
-            adapter.notifyDataSetChanged()
         } else {
             noResults!!.visibility = View.VISIBLE
         }
@@ -111,8 +111,7 @@ class PlacesFragment : BaseFragment() {
         when (state) {
             AppState.States.PLACES_DOWNLOADED -> {
                 progressSpinner!!.visibility = View.GONE
-                placesList!!.clear()
-                placesList!!.addAll(store.state.placeState().places)
+                adapter.setItems(store.state.placeState().places)
                 updateView()
             }
             AppState.States.GET_PLACES_FAILED -> noResults!!.visibility = View.VISIBLE
@@ -123,7 +122,5 @@ class PlacesFragment : BaseFragment() {
 
     companion object {
         val DEFAULT_LOCATION = "-33.8670522,151.1957362"
-
-        private var placesList: MutableList<Place>? = null
     }
 }

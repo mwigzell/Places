@@ -9,7 +9,7 @@ import com.mwigzell.places.redux.ActionCreator
 import com.mwigzell.places.redux.AppAction
 import com.mwigzell.places.redux.AppState
 import com.mwigzell.places.redux.jedux.Store
-import com.mwigzell.places.redux.original.Subscriber
+import com.mwigzell.places.redux.jedux.Subscriber
 
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -17,8 +17,6 @@ import java.util.ArrayList
 
 import javax.inject.Inject
 import javax.inject.Singleton
-
-import timber.log.Timber
 
 /**
  *

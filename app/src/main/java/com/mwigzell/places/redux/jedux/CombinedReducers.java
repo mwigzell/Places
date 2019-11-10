@@ -1,11 +1,9 @@
-package com.mwigzell.places.redux.original;
+package com.mwigzell.places.redux.jedux;
 
 import java.util.Arrays;
 import java.util.List;
 
-import com.mwigzell.places.redux.AppState;
 import com.mwigzell.places.redux.jedux.Store.Reducer;
-import com.mwigzell.places.redux.jedux.Action;
 
 public class CombinedReducers<A extends Action, S extends State> implements Reducer<A, S> {
 

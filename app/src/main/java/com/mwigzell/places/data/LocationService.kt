@@ -17,8 +17,8 @@ import com.mwigzell.places.redux.ActionCreator
 import com.mwigzell.places.redux.AppAction
 import com.mwigzell.places.redux.AppState
 import com.mwigzell.places.redux.jedux.Store
-import com.mwigzell.places.redux.original.Subscriber
-import com.mwigzell.places.redux.original.Subscription
+import com.mwigzell.places.redux.jedux.Subscriber
+import com.mwigzell.places.redux.jedux.Subscription
 
 import java.text.DecimalFormat
 

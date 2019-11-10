@@ -7,14 +7,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mwigzell.places.redux.jedux.Action;
 import com.mwigzell.places.redux.jedux.Store;
-import com.mwigzell.places.redux.original.State;
+import com.mwigzell.places.redux.jedux.State;
 
-public class PersistanceController implements Store.Middleware<Action, State> {
+import timber.log.Timber;
+
+public class PersistenceController implements Store.Middleware<Action, State> {
 
     private final SharedPreferences mPreferences;
     private final Gson mGson;
 
-    public PersistanceController(Context context) {
+    public PersistenceController(Context context) {
         mPreferences = context.getSharedPreferences("data", 0);
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapterFactory(new GsonAdaptersAppState());
@@ -32,7 +34,12 @@ public class PersistanceController implements Store.Middleware<Action, State> {
     @Override
     public void dispatch(Store<Action, State> store, Action action, Store.NextDispatcher<Action> next) {
         next.dispatch(action);
-        String json = mGson.toJson(store.getState());
-        mPreferences.edit().putString("data", json).apply();
+        try {
+            String json = mGson.toJson(store.getState());
+            mPreferences.edit().putString("data", json).apply();
+        } catch (StackOverflowError e) {
+            mPreferences.edit().clear().commit();
+            Timber.e(e, "Caught stack overflow");
+        }
     }
 }

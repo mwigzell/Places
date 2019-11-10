@@ -67,7 +67,6 @@ class TypesFragment : BaseFragment() {
         llm.orientation = LinearLayoutManager.VERTICAL
         recyclerView.layoutManager = llm
         actionCreator.loadTypes()
-        adapter = TypesViewAdapter(actionCreator)
         recyclerView.adapter = adapter
     }
 

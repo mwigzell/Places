@@ -12,17 +12,23 @@ import com.bumptech.glide.Glide
 import com.mwigzell.places.PlacesApplication
 import com.mwigzell.places.R
 import com.mwigzell.places.model.Place
+import javax.inject.Inject
 
 /**
  * Adapt List<Place> to RecyclerView.Adapter
 </Place> */
 
-class PlacesViewAdapter internal constructor(private val items: List<Place>?) : RecyclerView.Adapter<PlacesViewAdapter.ListItemViewHolder>() {
+class PlacesViewAdapter @Inject internal constructor() : RecyclerView.Adapter<PlacesViewAdapter.ListItemViewHolder>() {
     private val selectedItems: SparseBooleanArray
+    private var items: List<Place>? = null
 
     init {
-        requireNotNull(items) { "modelData must not be null" }
         selectedItems = SparseBooleanArray()
+    }
+
+    fun setItems(items: List<Place>) {
+        this.items = items
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ListItemViewHolder {
@@ -52,14 +58,14 @@ class PlacesViewAdapter internal constructor(private val items: List<Place>?) : 
     }
 
     override fun onBindViewHolder(viewHolder: ListItemViewHolder, position: Int) {
-        val model = items.get(position)
+        val model = items!!.get(position)
         viewHolder.name.text = model.name.toString()
         getPhoto(model, viewHolder.imageView)
         viewHolder.itemView.isActivated = selectedItems.get(position, false)
     }
 
     override fun getItemCount(): Int {
-        return items.size
+        return items?.size ?: 0
     }
 
     class ListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

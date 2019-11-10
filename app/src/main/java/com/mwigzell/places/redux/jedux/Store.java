@@ -1,8 +1,5 @@
 package com.mwigzell.places.redux.jedux;
 
-import com.mwigzell.places.redux.original.Subscriber;
-import com.mwigzell.places.redux.original.Subscription;
-
 import java.util.ArrayList;
 import java.util.List;
 

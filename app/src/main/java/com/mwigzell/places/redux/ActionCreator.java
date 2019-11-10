@@ -37,7 +37,7 @@ public class ActionCreator {
         store.dispatch(new AppAction(GET_PLACES));
     }
 
-    public void getPlacesFailed(final Throwable lastError) {
+    public void getPlacesFailed(final String lastError) {
         store.dispatch(new AppAction(GET_PLACES_FAILED, lastError));
     }
 
@@ -57,8 +57,8 @@ public class ActionCreator {
         store.dispatch(new AppAction(LOCATION_UPDATED, location));
     }
 
-    public void selectType(Type type) {
-        store.dispatch(new AppAction(SELECT_TYPE, type));
+    public void selectType(Integer position) {
+        store.dispatch(new AppAction(SELECT_TYPE, position));
     }
 
     public void restart() { store.dispatch(new AppAction(RESTART)); }

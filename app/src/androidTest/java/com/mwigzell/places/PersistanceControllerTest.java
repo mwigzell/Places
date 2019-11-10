@@ -5,12 +5,11 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.mwigzell.places.model.Place;
-import com.mwigzell.places.model.Type;
 import com.mwigzell.places.redux.AppAction;
 import com.mwigzell.places.redux.AppReducer;
 import com.mwigzell.places.redux.AppState;
 import com.mwigzell.places.redux.ImmutableAppState;
-import com.mwigzell.places.redux.PersistanceController;
+import com.mwigzell.places.redux.PersistenceController;
 import com.mwigzell.places.redux.PlaceState;
 import com.mwigzell.places.redux.jedux.Logger;
 import com.mwigzell.places.redux.jedux.Store;
@@ -30,7 +29,7 @@ import static junit.framework.Assert.assertTrue;
  */
 @RunWith(AndroidJUnit4.class)
 public class PersistanceControllerTest {
-    PersistanceController persistanceController;
+    PersistenceController persistenceController;
 
     //@Mock
     //Store.NextDispatcher<Action> nextDispatcher;
@@ -40,7 +39,7 @@ public class PersistanceControllerTest {
     @Before
     public void setup() {
         //MockitoAnnotations.initMocks(this);
-        persistanceController = new PersistanceController(InstrumentationRegistry.getInstrumentation().getTargetContext());
+        persistenceController = new PersistenceController(InstrumentationRegistry.getInstrumentation().getTargetContext());
     }
 
     @Test
@@ -51,12 +50,12 @@ public class PersistanceControllerTest {
         AppState appState = ImmutableAppState.builder()
                 .placeState(new PlaceState())
                 .state(AppState.States.INIT)
-                .lastError(new UnsupportedOperationException())
-                .types(new ArrayList<Type>())
+                .lastError("")
+                .types(new ArrayList<>())
                 .location(new Location("dummy"))
-                .selectedType(new Type("name url"))
+                .selectedPosition(99)
                 .build();
-        store = new Store(appReducer, appState, logger, persistanceController);
+        store = new Store(appReducer, appState, logger, persistenceController);
         List<Place> places = new ArrayList<>();
         Place place = new Place();
         place.name = "a_name";
@@ -66,10 +65,11 @@ public class PersistanceControllerTest {
 
         assertEquals(AppState.States.PLACES_DOWNLOADED, store.getState().state());
 
-        AppState state = persistanceController.getSavedState();
+        AppState state = persistenceController.getSavedState();
 
         assertEquals(AppState.States.PLACES_DOWNLOADED, state.state());
         assertTrue(state.placeState().places.size() == 1);
         assertEquals("a_name", state.placeState().places.get(0).name);
+        assertEquals(99, state.selectedPosition().intValue());
     }
 }

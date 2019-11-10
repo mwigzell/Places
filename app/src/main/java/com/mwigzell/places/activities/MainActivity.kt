@@ -15,15 +15,14 @@ import com.mwigzell.places.redux.ActionCreator
 import com.mwigzell.places.redux.AppAction
 import com.mwigzell.places.redux.AppState
 import com.mwigzell.places.redux.jedux.Store
-import com.mwigzell.places.redux.original.Subscriber
-import com.mwigzell.places.redux.original.Subscription
+import com.mwigzell.places.redux.jedux.Subscriber
+import com.mwigzell.places.redux.jedux.Subscription
 
 import javax.inject.Inject
 
 import butterknife.BindView
 import butterknife.ButterKnife
 import dagger.Module
-import dagger.Provides
 import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.ContributesAndroidInjector
@@ -33,14 +32,6 @@ import dagger.android.support.HasSupportFragmentInjector
 // We can define this anywhere we like, but it's convenient to include
 // in the same file as the class being injected
 // An object because I want to provide a static function, and it's Kotlin
-/*@Module
-object MainActivityModule {
-    // static because dagger can call this method like MainActivityModule.provideText(),
-    // rather than new MainActivityModule().provideText()
-    @Provides
-    @JvmStatic fun provideText() = "Why, hello there!"
-}*/
-
 @Module abstract class MainActivityModule {
     @ContributesAndroidInjector abstract fun typesFragment(): TypesFragment
     @ContributesAndroidInjector abstract fun placesFragment(): PlacesFragment

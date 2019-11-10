@@ -4,28 +4,25 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
 
-import com.mwigzell.places.dagger.AppModule;
-import com.mwigzell.places.dagger.Injection;
 import com.mwigzell.places.model.Place;
 import com.mwigzell.places.model.Type;
 import com.mwigzell.places.redux.ActionCreator;
 import com.mwigzell.places.redux.AppAction;
 import com.mwigzell.places.redux.AppReducer;
 import com.mwigzell.places.redux.AppState;
+import com.mwigzell.places.redux.ImmutableAppState;
+import com.mwigzell.places.redux.PlaceState;
 import com.mwigzell.places.redux.jedux.Store.Reducer;
 import com.mwigzell.places.redux.jedux.Store;
-import com.mwigzell.places.redux.original.Subscriber;
+import com.mwigzell.places.redux.jedux.Subscriber;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertEquals;
@@ -43,12 +40,7 @@ public class ActionCreatorTest {
     @Mock
     Subscriber subscriber;
 
-    private static TestComponent component = null;
-
-    @Inject
-    Store<AppAction, AppState> store;
-
-    @Inject
+    Store<AppAction<Object>, AppState> store;
     AppState appState;
 
     @Mock
@@ -59,7 +51,20 @@ public class ActionCreatorTest {
 
     ActionCreator actionCreator;
 
-    public Store<AppAction, AppState> provideStore() {
+    private AppState provideAppState() {
+        return ImmutableAppState.builder()
+                .placeState(new PlaceState())
+                .state(AppState.States.INIT)
+                .lastError("")
+                .types(new ArrayList<>())
+                .location(new Location("init"))
+                .selectedPosition(new Integer(0))
+                .build();
+    }
+
+    public Store<AppAction<Object>, AppState> provideStore() {
+        appState = provideAppState();
+
         List<Reducer<AppAction, AppState>> reducers = new ArrayList<>();
         store =  new Store(new AppReducer(reducers), appState);
         return store;
@@ -69,11 +74,7 @@ public class ActionCreatorTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         when(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences);
-        component = DaggerTestComponent.builder()
-                .appModule(new AppModule(context))
-                .build();
-        Injection.create(context).setComponent(component);
-        component.inject(this);
+
         store = provideStore();
         actionCreator = new ActionCreator(store);
     }
@@ -120,10 +121,10 @@ public class ActionCreatorTest {
     public void testGetPlacesFailed() throws Exception {
         store.subscribe(subscriber);
         Throwable e = new Exception();
-        actionCreator.getPlacesFailed(e);
+        actionCreator.getPlacesFailed(e.toString());
 
         assertEquals(AppState.States.GET_PLACES_FAILED, store.getState().state());
-        assertEquals(e, store.getState().lastError());
+        assertEquals(e.toString(), store.getState().lastError());
         verify(subscriber).onStateChanged();
     }
 
@@ -161,10 +162,10 @@ public class ActionCreatorTest {
     @Test public void selectType() {
         store.subscribe(subscriber);
         Type type = new Type("a_name an_url");
-        actionCreator.selectType(type);
+        actionCreator.selectType(99);
 
         assertEquals(AppState.States.SELECTED_TYPE, store.getState().state());
-        assertEquals(type, store.getState().selectedType());
+        assertEquals(99, store.getState().selectedPosition().intValue());
         verify(subscriber).onStateChanged();
     }
 
@@ -172,24 +173,24 @@ public class ActionCreatorTest {
     public void testCombined() {
         actionCreator.init();
         Type type = new Type("a_name an_url");
-        actionCreator.selectType(type);
+        actionCreator.selectType(99);
         Location location = new Location("fused");
         actionCreator.locationUpdated(location);
         List<Type> types = new ArrayList<>();
         actionCreator.typesLoaded(types);
         actionCreator.loadTypes();
         Throwable e = new Exception();
-        actionCreator.getPlacesFailed(e);
+        actionCreator.getPlacesFailed(e.toString());
         List<Place> places = new ArrayList<>();
         actionCreator.placesDownloaded(places);
         actionCreator.getPlaces();
 
 
         assertEquals(AppState.States.GET_PLACES, store.getState().state());
-        assertEquals(type, store.getState().selectedType());
+        assertEquals(99, store.getState().selectedPosition().intValue());
         assertEquals(location, store.getState().location());
         assertEquals(types, store.getState().types());
-        assertEquals(e, store.getState().lastError());
+        assertEquals(e.toString(), store.getState().lastError());
         assertEquals(places, store.getState().placeState().places);
     }
 }

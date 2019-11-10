@@ -1,7 +1,7 @@
 package com.mwigzell.places.redux;
 
 import com.mwigzell.places.model.Place;
-import com.mwigzell.places.redux.original.State;
+import com.mwigzell.places.redux.jedux.State;
 
 import java.util.ArrayList;
 import java.util.List;

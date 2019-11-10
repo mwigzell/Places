@@ -4,7 +4,7 @@ import android.location.Location;
 
 import com.mwigzell.places.model.Place;
 import com.mwigzell.places.model.Type;
-import com.mwigzell.places.redux.original.CombinedReducers;
+import com.mwigzell.places.redux.jedux.CombinedReducers;
 import com.mwigzell.places.redux.jedux.Store.Reducer;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class AppReducer extends CombinedReducers<AppAction, AppState> implements
                 break;
             case GET_PLACES_FAILED:
                 nextState = ImmutableAppState.copyOf(state).withState(AppState.States.GET_PLACES_FAILED)
-                    .withLastError((Throwable)action.value);
+                    .withLastError((String)action.value);
                 break;
             case PLACES_DOWNLOADED:
                 nextState = ImmutableAppState.copyOf(state).withState(AppState.States.PLACES_DOWNLOADED)
@@ -49,7 +49,7 @@ public class AppReducer extends CombinedReducers<AppAction, AppState> implements
                 break;
             case SELECT_TYPE:
                 nextState = ImmutableAppState.copyOf(state).withState(AppState.States.SELECTED_TYPE)
-                    .withSelectedType((Type)action.value);
+                    .withSelectedPosition((Integer)action.value);
                 break;
             default:
                 nextState = super.reduce(action, state);

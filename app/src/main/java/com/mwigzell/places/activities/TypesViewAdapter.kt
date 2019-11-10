@@ -62,7 +62,7 @@ internal constructor(private val actionCreator: ActionCreator
     }
 
     override fun getItemCount(): Int {
-        return items!!.size
+        return items?.size ?: 0
     }
 
     inner class ListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
@@ -77,8 +77,8 @@ internal constructor(private val actionCreator: ActionCreator
         }
 
         override fun onClick(view: View) {
-            Timber.d("onClick: " + nameView.text)
-            actionCreator!!.selectType(boundModel)
+            Timber.d("onClick: " + nameView.text + " position: " + adapterPosition)
+            actionCreator!!.selectType(adapterPosition)
         }
     }
 }
