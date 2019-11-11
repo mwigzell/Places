@@ -4,6 +4,7 @@ import android.content.Context
 import com.mwigzell.places.PlacesApplication
 import dagger.BindsInstance
 import dagger.Component
+import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
@@ -17,15 +18,7 @@ import javax.inject.Singleton
     // Defines a series of Subcomponents that bind "screens" (Activities, etc)
     ScreenBindingModule::class
 ])
-interface PlacesApplicationComponent {
-    fun inject(app: PlacesApplication)
-
+interface AppComponent: AndroidInjector<PlacesApplication> {
     @Component.Builder
-    interface Builder {
-        fun build(): PlacesApplicationComponent
-        @BindsInstance
-        fun app(app: Context): Builder
-
-        fun appModule(module: AppModule): Builder
-    }
+    abstract class Builder : AndroidInjector.Builder<PlacesApplication>()
 }

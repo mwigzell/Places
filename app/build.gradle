@@ -64,6 +64,9 @@ dependencies {
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.0.0'
     implementation 'androidx.transition:transition:1.0.0'
 
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
     /* Dagger2 - We are going to use dagger.android which includes
      * support for Activity and fragment injection so we need to include
      * the following dependencies */
@@ -117,8 +120,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.+'
     kaptTest "com.google.dagger:dagger-compiler:2.7"
-    implementation "androidx.core:core-ktx:+"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 repositories {
     mavenCentral()

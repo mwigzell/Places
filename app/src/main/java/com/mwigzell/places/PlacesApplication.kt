@@ -1,10 +1,7 @@
 package com.mwigzell.places
 
-import android.app.Activity
-import android.app.Application
 import com.crashlytics.android.Crashlytics
-import com.mwigzell.places.dagger.AppModule
-import com.mwigzell.places.dagger.DaggerPlacesApplicationComponent
+import com.mwigzell.places.dagger.DaggerAppComponent
 import com.mwigzell.places.data.DataService
 import com.mwigzell.places.redux.ActionCreator
 import com.mwigzell.places.redux.AppAction
@@ -12,22 +9,20 @@ import com.mwigzell.places.redux.AppState
 import com.mwigzell.places.redux.jedux.Store
 import com.mwigzell.places.redux.jedux.Subscriber
 import com.mwigzell.places.util.Log
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
+import dagger.android.AndroidInjector
+import dagger.android.support.DaggerApplication
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import javax.inject.Inject
-
 
 /**
  * Created by mwigzell on 12/10/16.
  */
 
-open class PlacesApplication : Application(), Subscriber, HasActivityInjector {
-    // Required by HasActivityInjector, and injected below
-    @Inject
-    protected lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
-    override fun activityInjector() = dispatchingAndroidInjector
+open class PlacesApplication : DaggerApplication(), Subscriber {
+    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+        return DaggerAppComponent.builder().create(this)
+    }
 
     @Inject
     lateinit internal var store: Store<AppAction<Any>, AppState>
@@ -48,8 +43,6 @@ open class PlacesApplication : Application(), Subscriber, HasActivityInjector {
             }
         })
 
-        initDagger()
-
         if (!BuildConfig.DEBUG) {
             Fabric.with(this, Crashlytics())
         }
@@ -63,14 +56,6 @@ open class PlacesApplication : Application(), Subscriber, HasActivityInjector {
             AppState.States.RESTARTED -> actionCreator!!.init()
             else -> actionCreator!!.restart()
         }
-    }
-
-    private fun initDagger() {
-        DaggerPlacesApplicationComponent.builder()
-                .app(this)
-                .appModule(AppModule(this))
-                .build()
-                .inject(this)
     }
 
     override fun onStateChanged() {
