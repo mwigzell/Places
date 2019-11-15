@@ -16,7 +16,8 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.mwigzell.places.util.CustomTestRunner"
         vectorDrawables.useSupportLibrary = true
     }
     flavorDimensions "version"

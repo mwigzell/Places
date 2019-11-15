@@ -1,6 +1,7 @@
 package com.mwigzell.places.activities
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import androidx.fragment.app.Fragment
 
@@ -10,6 +11,8 @@ import com.mwigzell.places.redux.AppState
 import com.mwigzell.places.redux.jedux.Store
 import com.mwigzell.places.redux.jedux.Subscriber
 import com.mwigzell.places.redux.jedux.Subscription
+import dagger.android.support.AndroidSupportInjection
+import dagger.android.support.DaggerFragment
 
 import javax.inject.Inject
 
@@ -19,7 +22,7 @@ import timber.log.Timber
  *
  */
 
-abstract class BaseFragment : Fragment(), Subscriber {
+abstract class BaseFragment : DaggerFragment(), Subscriber {
 
     @Inject
     lateinit internal var store: Store<AppAction<Any>, AppState>

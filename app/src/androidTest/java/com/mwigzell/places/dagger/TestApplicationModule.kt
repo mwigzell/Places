@@ -2,21 +2,18 @@ package com.mwigzell.places.dagger
 
 import android.content.Context
 import android.location.Location
+import com.mwigzell.places.PlacesApplication
 import com.mwigzell.places.redux.*
 import com.mwigzell.places.redux.jedux.Logger
 import com.mwigzell.places.redux.jedux.Store
-import com.mwigzell.places.redux.jedux.Store.Reducer
+import com.mwigzell.places.util.TestApplication
 import dagger.Module
 import dagger.Provides
-import java.util.*
+import java.util.ArrayList
 import javax.inject.Singleton
 
-
-/**
- * Created by mwigzell on 11/5/15.
- */
 @Module
-class AppModule(protected val context: Context) {
+class TestApplicationModule(protected val context: Context) {
 
     @Provides
     fun providesContext(): Context {
@@ -47,7 +44,7 @@ class AppModule(protected val context: Context) {
     @Provides
     @Singleton
     fun provideStore(appState: AppState, persistenceController: PersistenceController): Store<AppAction<Any>, AppState> {
-        val reducers = ArrayList<Reducer<AppAction<*>, AppState>>()
+        val reducers = ArrayList<Store.Reducer<AppAction<*>, AppState>>()
 
         return Store<AppAction<Any>, AppState>(
                 AppReducer(reducers),

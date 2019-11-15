@@ -1,24 +1,21 @@
 package com.mwigzell.places
 
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
-import com.mwigzell.places.dagger.AppModule
+import androidx.test.platform.app.InstrumentationRegistry
+import com.mwigzell.places.dagger.TestApplicationComponent
 import com.mwigzell.places.redux.ActionCreator
 import com.mwigzell.places.redux.AppAction
 import com.mwigzell.places.redux.AppState
 import com.mwigzell.places.redux.jedux.Store
 import com.mwigzell.places.redux.jedux.Subscriber
-
+import com.mwigzell.places.util.TestApplication
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.mockito.Mockito.*
-
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
 import javax.inject.Inject
-
-import org.junit.Assert.assertEquals
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -36,20 +33,21 @@ class ActionCreatorAndroidTest {
 
     @Before
     fun setup() {
-        val appModule = AppModule(InstrumentationRegistry.getInstrumentation().targetContext)
-        store = appModule.provideStore()
-
         subscriber = mock(Subscriber::class.java)
+
+        val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
+        (app.getAppComponent() as TestApplicationComponent).inject(this)
+
         actionCreator = ActionCreator(store)
     }
 
     @Test
     @Throws(Exception::class)
     fun testInit() {
-        store!!.subscribe(subscriber)
+        store.subscribe(subscriber)
         actionCreator.init()
 
-        assertEquals(AppState.States.INIT, store!!.state.state())
+        assertEquals(AppState.States.INIT, store.state.state())
         verify(subscriber).onStateChanged()
     }
 }

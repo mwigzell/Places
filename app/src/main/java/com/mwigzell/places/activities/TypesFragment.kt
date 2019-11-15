@@ -44,11 +44,6 @@ class TypesFragment : BaseFragment() {
                 .get(SimpleFragmentActivityViewModel::class.java)
     }*/
 
-    override fun onAttach(context: Context) {
-        AndroidSupportInjection.inject(this)
-        super.onAttach(context)
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Timber.d("onCreateView")
 

@@ -1,6 +1,10 @@
 package com.mwigzell.places
 
+import android.app.Activity
+import android.app.Application
 import com.crashlytics.android.Crashlytics
+import com.mwigzell.places.dagger.AppComponent
+import com.mwigzell.places.dagger.AppModule
 import com.mwigzell.places.dagger.DaggerAppComponent
 import com.mwigzell.places.data.DataService
 import com.mwigzell.places.redux.ActionCreator
@@ -10,19 +14,19 @@ import com.mwigzell.places.redux.jedux.Store
 import com.mwigzell.places.redux.jedux.Subscriber
 import com.mwigzell.places.util.Log
 import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasActivityInjector
 import dagger.android.support.DaggerApplication
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import javax.inject.Inject
 
+
 /**
  * Created by mwigzell on 12/10/16.
  */
 
-open class PlacesApplication : DaggerApplication(), Subscriber {
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return DaggerAppComponent.builder().create(this)
-    }
+open class PlacesApplication @Inject constructor(): Application(), Subscriber, HasActivityInjector {
 
     @Inject
     lateinit internal var store: Store<AppAction<Any>, AppState>
@@ -33,8 +37,17 @@ open class PlacesApplication : DaggerApplication(), Subscriber {
     @Inject
     lateinit internal var dataService: DataService
 
+    open lateinit protected var dependencyInjector: AppComponent
+
+    // Required by HasActivityInjector, and injected below
+    @Inject
+    protected lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
+    override fun activityInjector() = dispatchingAndroidInjector
+
     override fun onCreate() {
         super.onCreate()
+
+        createDaggerComponent()
 
         Thread.setDefaultUncaughtExceptionHandler(object : Thread.UncaughtExceptionHandler {
             override fun uncaughtException(thread: Thread, ex: Throwable) {
@@ -49,13 +62,24 @@ open class PlacesApplication : DaggerApplication(), Subscriber {
         Log.init(this)
         Timber.d("Hi ho!, its off to work we go!!!")
 
-        store!!.subscribe(this)
+        store.subscribe(this)
 
-        when (store!!.state.state()) {
-            AppState.States.INIT -> actionCreator!!.init()
-            AppState.States.RESTARTED -> actionCreator!!.init()
-            else -> actionCreator!!.restart()
+        when (store.state.state()) {
+            AppState.States.INIT -> actionCreator.init()
+            AppState.States.RESTARTED -> actionCreator.init()
+            else -> actionCreator.restart()
         }
+    }
+
+    open protected fun createDaggerComponent() {
+        dependencyInjector = DaggerAppComponent.builder()
+                .appModule(AppModule(this))
+                .build()
+        dependencyInjector.inject(this)
+    }
+
+    fun getAppComponent(): AppComponent {
+        return dependencyInjector
     }
 
     override fun onStateChanged() {

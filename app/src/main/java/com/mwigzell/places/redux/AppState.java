@@ -2,6 +2,7 @@ package com.mwigzell.places.redux;
 
 import android.location.Location;
 
+import com.google.gson.annotations.Expose;
 import com.mwigzell.places.model.Type;
 import com.mwigzell.places.redux.jedux.State;
 

@@ -6,6 +6,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
+import dagger.android.support.DaggerApplication
 import javax.inject.Singleton
 
 // Doesn't need to be a nested class. I could also put this in its own file or,
@@ -18,7 +19,6 @@ import javax.inject.Singleton
     // Defines a series of Subcomponents that bind "screens" (Activities, etc)
     ScreenBindingModule::class
 ])
-interface AppComponent: AndroidInjector<PlacesApplication> {
-    @Component.Builder
-    abstract class Builder : AndroidInjector.Builder<PlacesApplication>()
+interface AppComponent: AndroidInjector<DaggerApplication> {
+    fun inject(app: PlacesApplication)
 }
