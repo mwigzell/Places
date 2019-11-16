@@ -1,7 +1,7 @@
 package com.mwigzell.places.dagger
 
-import com.mwigzell.places.activities.MainActivity
-import com.mwigzell.places.activities.MainActivityModule
+import com.mwigzell.places.ui.MainActivity
+import com.mwigzell.places.ui.MainActivityModule
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

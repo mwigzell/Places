@@ -1,4 +1,4 @@
-package com.mwigzell.places.util
+package com.mwigzell.places
 
 import androidx.fragment.app.Fragment
 import com.mwigzell.places.PlacesApplication

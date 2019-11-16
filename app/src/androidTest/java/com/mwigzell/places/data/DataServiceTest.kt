@@ -1,4 +1,4 @@
-package com.mwigzell.places
+package com.mwigzell.places.data
 
 import android.content.SharedPreferences
 
@@ -6,12 +6,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mwigzell.places.dagger.TestApplicationComponent
 
-import com.mwigzell.places.data.DataService
 import com.mwigzell.places.redux.ActionCreator
 import com.mwigzell.places.redux.AppAction
 import com.mwigzell.places.redux.AppState
 import com.mwigzell.places.redux.jedux.Store
-import com.mwigzell.places.util.TestApplication
+import com.mwigzell.places.TestApplication
 
 import org.junit.After
 import org.junit.Before

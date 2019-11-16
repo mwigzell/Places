@@ -1,4 +1,4 @@
-package com.mwigzell.places;
+package com.mwigzell.places.redux;
 
 import android.location.Location;
 import androidx.test.platform.app.InstrumentationRegistry;

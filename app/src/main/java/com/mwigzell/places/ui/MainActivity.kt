@@ -1,4 +1,4 @@
-package com.mwigzell.places.activities
+package com.mwigzell.places.ui
 
 import android.content.res.Configuration
 import android.os.Bundle

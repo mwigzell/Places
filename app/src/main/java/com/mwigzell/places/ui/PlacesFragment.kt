@@ -1,6 +1,5 @@
-package com.mwigzell.places.activities
+package com.mwigzell.places.ui
 
-import android.content.Context
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,18 +10,14 @@ import android.widget.ProgressBar
 import android.widget.TextView
 
 import com.mwigzell.places.R
-import com.mwigzell.places.model.Place
 import com.mwigzell.places.network.NetworkService
 import com.mwigzell.places.redux.ActionCreator
 import com.mwigzell.places.redux.AppState
-
-import java.util.ArrayList
 
 import javax.inject.Inject
 
 import butterknife.BindView
 import butterknife.ButterKnife
-import dagger.android.support.AndroidSupportInjection
 import timber.log.Timber
 
 /**
@@ -81,10 +76,10 @@ class PlacesFragment : BaseFragment() {
             loc = DEFAULT_LOCATION
         }
         var i = store.state.selectedPosition()
-        var name = "restaurant"
+        var name = DEFAULT_TYPE
         if (i < store.state.types().size)
             name = store.state.types().get(i).name
-        networkService!!.getPlaces(loc, "5000", name)
+        networkService!!.getPlaces(loc, DEFAULT_RADIUS, name)
     }
 
     private fun updateView() {
@@ -117,5 +112,7 @@ class PlacesFragment : BaseFragment() {
 
     companion object {
         val DEFAULT_LOCATION = "-33.8670522,151.1957362"
+        val DEFAULT_TYPE = "food&name=harbour"
+        val DEFAULT_RADIUS = "5000"
     }
 }

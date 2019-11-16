@@ -1,6 +1,5 @@
-package com.mwigzell.places.activities
+package com.mwigzell.places.ui
 
-import android.content.Context
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +16,6 @@ import javax.inject.Inject
 
 import butterknife.BindView
 import butterknife.ButterKnife
-import dagger.android.support.AndroidSupportInjection
 import timber.log.Timber
 
 /**

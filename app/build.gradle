@@ -17,7 +17,7 @@ android {
         versionCode 1
         versionName "1.0"
         //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunner "com.mwigzell.places.util.CustomTestRunner"
+        testInstrumentationRunner "com.mwigzell.places.CustomTestRunner"
         vectorDrawables.useSupportLibrary = true
     }
     flavorDimensions "version"
@@ -105,6 +105,9 @@ dependencies {
     // Set this dependency to build and run Espresso tests
     //androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
     androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestImplementation('androidx.test.espresso:espresso-contrib:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     // Set this dependency to build and run UI Automator tests

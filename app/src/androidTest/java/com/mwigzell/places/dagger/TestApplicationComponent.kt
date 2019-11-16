@@ -1,7 +1,8 @@
 package com.mwigzell.places.dagger
 
-import com.mwigzell.places.ActionCreatorAndroidTest
-import com.mwigzell.places.DataServiceTest
+import com.mwigzell.places.redux.ActionCreatorAndroidTest
+import com.mwigzell.places.data.DataServiceTest
+import com.mwigzell.places.ui.MainActivityTest
 import dagger.Component
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
@@ -12,4 +13,5 @@ interface TestApplicationComponent : AppComponent {
 
     fun inject(test: ActionCreatorAndroidTest)
     fun inject(test: DataServiceTest)
+    fun inject(test: MainActivityTest)
 }

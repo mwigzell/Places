@@ -1,14 +1,11 @@
-package com.mwigzell.places
+package com.mwigzell.places.redux
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.mwigzell.places.TestApplication
 import com.mwigzell.places.dagger.TestApplicationComponent
-import com.mwigzell.places.redux.ActionCreator
-import com.mwigzell.places.redux.AppAction
-import com.mwigzell.places.redux.AppState
 import com.mwigzell.places.redux.jedux.Store
 import com.mwigzell.places.redux.jedux.Subscriber
-import com.mwigzell.places.util.TestApplication
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test

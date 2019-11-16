@@ -31,10 +31,10 @@ constructor(private val serviceCreator: ServiceCreator,
 
     @JvmOverloads
     fun getPlaces(location: String = "-33.8670522,151.1957362", radius: String = "500", type: String = "food&name=harbour") {
-        Timber.d("Get places radius=$radius type=$type")
+        Timber.d("Get places loc=$location radius=$radius type=$type")
 
         client.getPlaces(location, radius, type, PlacesApplication.GOOGLE_PLACES_API_KEY)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : rx.Subscriber<PlacesResponse>() {
                     override fun onCompleted() {

@@ -2,11 +2,9 @@ package com.mwigzell.places.dagger
 
 import android.content.Context
 import android.location.Location
-import com.mwigzell.places.PlacesApplication
 import com.mwigzell.places.redux.*
 import com.mwigzell.places.redux.jedux.Logger
 import com.mwigzell.places.redux.jedux.Store
-import com.mwigzell.places.util.TestApplication
 import dagger.Module
 import dagger.Provides
 import java.util.ArrayList

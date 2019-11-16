@@ -1,19 +1,11 @@
-package com.mwigzell.places
+package com.mwigzell.places.util
 
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
-import com.mwigzell.places.dagger.AppModule
-import com.mwigzell.places.util.HttpUtils
-import dagger.BindsInstance
-import dagger.Component
-import dagger.android.support.AndroidSupportInjectionModule
+import com.mwigzell.places.PlacesApplication
 
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import javax.inject.Inject
 
 import timber.log.Timber
 
