@@ -15,6 +15,7 @@ import com.mwigzell.places.redux.jedux.Logger;
 import com.mwigzell.places.redux.jedux.Store;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -24,9 +25,7 @@ import java.util.List;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
-/**
- *
- */
+@Ignore
 @RunWith(AndroidJUnit4.class)
 public class PersistanceControllerTest {
     PersistenceController persistenceController;

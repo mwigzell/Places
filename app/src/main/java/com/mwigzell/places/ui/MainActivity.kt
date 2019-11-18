@@ -23,11 +23,7 @@ import javax.inject.Inject
 import butterknife.BindView
 import butterknife.ButterKnife
 import dagger.Module
-import dagger.android.AndroidInjection
-import dagger.android.AndroidInjector
-import dagger.android.ContributesAndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.*
 
 // We can define this anywhere we like, but it's convenient to include
 // in the same file as the class being injected
@@ -37,7 +33,7 @@ import dagger.android.support.HasSupportFragmentInjector
     @ContributesAndroidInjector abstract fun placesFragment(): PlacesFragment
 }
 
-class MainActivity : AppCompatActivity(), Subscriber, HasSupportFragmentInjector {
+class MainActivity : AppCompatActivity(), Subscriber, HasAndroidInjector {
     @BindView(R.id.drawer_layout)
     lateinit internal var mDrawer: DrawerLayout
 
@@ -57,8 +53,8 @@ class MainActivity : AppCompatActivity(), Subscriber, HasSupportFragmentInjector
 
     lateinit internal var subscription: Subscription
 
-    @Inject lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
+    @Inject lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
+    override fun androidInjector(): AndroidInjector<Any> = fragmentInjector
 
     /*@Inject lateinit var viewModelFactory: MainActivityViewModelFactory
     private val viewModel: MainActivityViewModel by lazy {

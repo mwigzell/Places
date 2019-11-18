@@ -71,11 +71,11 @@ dependencies {
     /* Dagger2 - We are going to use dagger.android which includes
      * support for Activity and fragment injection so we need to include
      * the following dependencies */
-    implementation 'com.google.dagger:dagger-android:2.17'
-    implementation 'com.google.dagger:dagger-android-support:2.17'
-    kapt 'com.google.dagger:dagger-android-processor:2.17'
+    implementation "com.google.dagger:dagger-android:$DAGGER_VERSION"
+    implementation "com.google.dagger:dagger-android-support:$DAGGER_VERSION"
+    kapt "com.google.dagger:dagger-android-processor:$DAGGER_VERSION"
     /* Dagger2 - default dependency */
-    kapt 'com.google.dagger:dagger-compiler:2.17'
+    kapt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
 
     compileOnly 'javax.annotation:jsr250-api:1.0'
     implementation 'com.jakewharton.timber:timber:4.3.1'
@@ -124,6 +124,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.+'
     kaptTest "com.google.dagger:dagger-compiler:2.7"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 }
 repositories {
     mavenCentral()

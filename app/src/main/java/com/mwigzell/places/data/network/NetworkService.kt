@@ -1,4 +1,4 @@
-package com.mwigzell.places.network
+package com.mwigzell.places.data.network
 
 import com.mwigzell.places.PlacesApplication
 //import com.mwigzell.places.dagger.Injection;

@@ -1,5 +1,6 @@
 package com.mwigzell.places.ui
 
+import android.content.Context
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -8,9 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProviders
 
-import com.mwigzell.places.R
-import com.mwigzell.places.network.NetworkService
+import com.mwigzell.places.data.network.NetworkService
 import com.mwigzell.places.redux.ActionCreator
 import com.mwigzell.places.redux.AppState
 
@@ -18,6 +19,7 @@ import javax.inject.Inject
 
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.mwigzell.places.dagger.ViewModelFactory
 import timber.log.Timber
 
 /**
@@ -26,13 +28,13 @@ import timber.log.Timber
 
 class PlacesFragment : BaseFragment() {
 
-    @BindView(R.id.noResults)
+    @BindView(com.mwigzell.places.R.id.noResults)
     lateinit internal var noResults: TextView
 
-    @BindView(R.id.progressSpinner)
+    @BindView(com.mwigzell.places.R.id.progressSpinner)
     lateinit internal var progressSpinner: ProgressBar
 
-    @BindView(R.id.myList)
+    @BindView(com.mwigzell.places.R.id.myList)
     lateinit internal var recyclerView: RecyclerView
 
     @Inject
@@ -44,12 +46,22 @@ class PlacesFragment : BaseFragment() {
     @Inject
     lateinit internal var adapter: PlacesViewAdapter
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private lateinit var mainViewModel: MainViewModel
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Timber.d("onCreateView")
 
-        val view = inflater.inflate(R.layout.places_fragment, container, false)
+        val view = inflater.inflate(com.mwigzell.places.R.layout.places_fragment, container, false)
         ButterKnife.bind(this, view)
         return view
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mainViewModel = ViewModelProviders.of(activity!!, viewModelFactory)[MainViewModel::class.java]
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

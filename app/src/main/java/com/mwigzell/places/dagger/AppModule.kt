@@ -2,13 +2,17 @@ package com.mwigzell.places.dagger
 
 import android.content.Context
 import android.location.Location
+import androidx.lifecycle.ViewModel
 import com.mwigzell.places.redux.*
 import com.mwigzell.places.redux.jedux.Logger
 import com.mwigzell.places.redux.jedux.Store
 import com.mwigzell.places.redux.jedux.Store.Reducer
+import com.mwigzell.places.ui.MainViewModel
 import dagger.Module
 import dagger.Provides
+import dagger.multibindings.IntoMap
 import java.util.*
+import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -16,12 +20,7 @@ import javax.inject.Singleton
  * Created by mwigzell on 11/5/15.
  */
 @Module
-class AppModule(protected val context: Context) {
-
-    @Provides
-    fun providesContext(): Context {
-        return context
-    }
+class AppModule() {
 
     @Provides
     @Singleton

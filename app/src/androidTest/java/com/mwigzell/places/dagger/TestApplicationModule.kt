@@ -11,12 +11,7 @@ import java.util.ArrayList
 import javax.inject.Singleton
 
 @Module
-class TestApplicationModule(protected val context: Context) {
-
-    @Provides
-    fun providesContext(): Context {
-        return context
-    }
+class TestApplicationModule() {
 
     @Provides
     @Singleton

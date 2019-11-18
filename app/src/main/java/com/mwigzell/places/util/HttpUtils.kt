@@ -1,10 +1,9 @@
 package com.mwigzell.places.util
 
-import com.mwigzell.places.network.ByteArrayPool
-import com.mwigzell.places.network.PoolingByteArrayOutputStream
+import com.mwigzell.places.data.network.ByteArrayPool
+import com.mwigzell.places.data.network.PoolingByteArrayOutputStream
 
 import java.io.IOException
-import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 

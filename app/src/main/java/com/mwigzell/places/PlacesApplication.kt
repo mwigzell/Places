@@ -1,10 +1,8 @@
 package com.mwigzell.places
 
-import android.app.Activity
 import android.app.Application
 import com.crashlytics.android.Crashlytics
 import com.mwigzell.places.dagger.AppComponent
-import com.mwigzell.places.dagger.AppModule
 import com.mwigzell.places.dagger.DaggerAppComponent
 import com.mwigzell.places.data.DataService
 import com.mwigzell.places.redux.ActionCreator
@@ -13,10 +11,8 @@ import com.mwigzell.places.redux.AppState
 import com.mwigzell.places.redux.jedux.Store
 import com.mwigzell.places.redux.jedux.Subscriber
 import com.mwigzell.places.util.Log
-import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
-import dagger.android.support.DaggerApplication
+import dagger.android.HasAndroidInjector
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import javax.inject.Inject
@@ -26,7 +22,7 @@ import javax.inject.Inject
  * Created by mwigzell on 12/10/16.
  */
 
-open class PlacesApplication @Inject constructor(): Application(), Subscriber, HasActivityInjector {
+open class PlacesApplication @Inject constructor(): Application(), Subscriber, HasAndroidInjector {
 
     @Inject
     lateinit internal var store: Store<AppAction<Any>, AppState>
@@ -41,8 +37,8 @@ open class PlacesApplication @Inject constructor(): Application(), Subscriber, H
 
     // Required by HasActivityInjector, and injected below
     @Inject
-    protected lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Activity>
-    override fun activityInjector() = dispatchingAndroidInjector
+    protected lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
+    override fun androidInjector() = dispatchingAndroidInjector
 
     override fun onCreate() {
         super.onCreate()
@@ -72,9 +68,8 @@ open class PlacesApplication @Inject constructor(): Application(), Subscriber, H
     }
 
     open protected fun createDaggerComponent() {
-        dependencyInjector = DaggerAppComponent.builder()
-                .appModule(AppModule(this))
-                .build()
+        dependencyInjector = DaggerAppComponent.factory()
+                .create(this)
         dependencyInjector.inject(this)
     }
 

@@ -1,28 +1,18 @@
 package com.mwigzell.places
 
-import androidx.fragment.app.Fragment
-import com.mwigzell.places.PlacesApplication
-import com.mwigzell.places.dagger.*
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
-import javax.inject.Inject
+import com.mwigzell.places.dagger.DaggerTestApplicationComponent
+import com.mwigzell.places.dagger.TestApplicationComponent
+import com.mwigzell.places.dagger.TestApplicationModule
 
 
-class TestApplication : PlacesApplication(), HasSupportFragmentInjector {
-
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
-
-    override fun supportFragmentInjector() = fragmentInjector
+class TestApplication : PlacesApplication() {
 
     override fun createDaggerComponent() {
-        dependencyInjector = DaggerTestApplicationComponent.builder()
-                .testApplicationModule(TestApplicationModule(this))
-                .build()
-        dependencyInjector.inject(this)
+        super.dependencyInjector = DaggerTestApplicationComponent.factory().create(this, TestApplicationModule())
+        super.dependencyInjector.inject(this)
     }
 
     fun setAppComponent(dependencyInjector : TestApplicationComponent) {
-        this.dependencyInjector = dependencyInjector
+        super.dependencyInjector = dependencyInjector
     }
 }
