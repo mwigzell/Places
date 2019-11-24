@@ -33,7 +33,7 @@ class MainActivityTest {
         MockitoAnnotations.initMocks(this)
 
         val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
-        (app.getAppComponent() as TestApplicationComponent).inject(this)
+        app.getInjector().inject(this)
     }
 
     @Test

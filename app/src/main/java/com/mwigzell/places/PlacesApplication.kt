@@ -1,6 +1,5 @@
 package com.mwigzell.places
 
-import android.app.Application
 import com.crashlytics.android.Crashlytics
 import com.mwigzell.places.dagger.AppComponent
 import com.mwigzell.places.dagger.DaggerAppComponent
@@ -11,8 +10,8 @@ import com.mwigzell.places.redux.AppState
 import com.mwigzell.places.redux.jedux.Store
 import com.mwigzell.places.redux.jedux.Subscriber
 import com.mwigzell.places.util.Log
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
+import dagger.android.AndroidInjector
+import dagger.android.support.DaggerApplication
 import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import javax.inject.Inject
@@ -22,7 +21,7 @@ import javax.inject.Inject
  * Created by mwigzell on 12/10/16.
  */
 
-open class PlacesApplication @Inject constructor(): Application(), Subscriber, HasAndroidInjector {
+open class PlacesApplication @Inject constructor(): DaggerApplication(), Subscriber{
 
     @Inject
     lateinit internal var store: Store<AppAction<Any>, AppState>
@@ -33,17 +32,23 @@ open class PlacesApplication @Inject constructor(): Application(), Subscriber, H
     @Inject
     lateinit internal var dataService: DataService
 
-    open lateinit protected var dependencyInjector: AppComponent
+    open lateinit protected var dependencyInjector: AndroidInjector<PlacesApplication>
 
-    // Required by HasActivityInjector, and injected below
-    @Inject
-    protected lateinit var dispatchingAndroidInjector: DispatchingAndroidInjector<Any>
-    override fun androidInjector() = dispatchingAndroidInjector
+    open protected fun createInjector(): AndroidInjector<PlacesApplication> {
+        return DaggerAppComponent
+                .factory()
+                .create(this)
+    }
+
+    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
+        if (! ::dependencyInjector.isInitialized) {
+            dependencyInjector = createInjector()
+        }
+        return dependencyInjector
+    }
 
     override fun onCreate() {
         super.onCreate()
-
-        createDaggerComponent()
 
         Thread.setDefaultUncaughtExceptionHandler(object : Thread.UncaughtExceptionHandler {
             override fun uncaughtException(thread: Thread, ex: Throwable) {
@@ -65,16 +70,6 @@ open class PlacesApplication @Inject constructor(): Application(), Subscriber, H
             AppState.States.RESTARTED -> actionCreator.init()
             else -> actionCreator.restart()
         }
-    }
-
-    open protected fun createDaggerComponent() {
-        dependencyInjector = DaggerAppComponent.factory()
-                .create(this)
-        dependencyInjector.inject(this)
-    }
-
-    fun getAppComponent(): AppComponent {
-        return dependencyInjector
     }
 
     override fun onStateChanged() {

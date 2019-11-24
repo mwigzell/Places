@@ -33,7 +33,7 @@ class ActionCreatorAndroidTest {
         subscriber = mock(Subscriber::class.java)
 
         val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
-        (app.getAppComponent() as TestApplicationComponent).inject(this)
+        app.getInjector().inject(this)
 
         actionCreator = ActionCreator(store)
     }

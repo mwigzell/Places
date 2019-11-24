@@ -6,7 +6,6 @@ import com.google.android.material.navigation.NavigationView
 import androidx.fragment.app.Fragment
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import android.view.MenuItem
 
@@ -24,6 +23,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import dagger.Module
 import dagger.android.*
+import dagger.android.support.DaggerAppCompatActivity
 
 // We can define this anywhere we like, but it's convenient to include
 // in the same file as the class being injected
@@ -33,7 +33,7 @@ import dagger.android.*
     @ContributesAndroidInjector abstract fun placesFragment(): PlacesFragment
 }
 
-class MainActivity : AppCompatActivity(), Subscriber, HasAndroidInjector {
+class MainActivity : DaggerAppCompatActivity(), Subscriber {
     @BindView(R.id.drawer_layout)
     lateinit internal var mDrawer: DrawerLayout
 
@@ -52,9 +52,6 @@ class MainActivity : AppCompatActivity(), Subscriber, HasAndroidInjector {
     lateinit internal var store: Store<AppAction<Any>, AppState>
 
     lateinit internal var subscription: Subscription
-
-    @Inject lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-    override fun androidInjector(): AndroidInjector<Any> = fragmentInjector
 
     /*@Inject lateinit var viewModelFactory: MainActivityViewModelFactory
     private val viewModel: MainActivityViewModel by lazy {

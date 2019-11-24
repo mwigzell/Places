@@ -38,7 +38,7 @@ class DataServiceTest {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
 
         val app = context.applicationContext as TestApplication
-        (app.getAppComponent() as TestApplicationComponent).inject(this)
+        app.getInjector().inject(this)
 
 
         preferences = context.getSharedPreferences("data", 0)
