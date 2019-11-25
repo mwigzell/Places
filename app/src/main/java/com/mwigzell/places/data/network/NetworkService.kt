@@ -25,8 +25,8 @@ constructor(private val serviceCreator: ServiceCreator,
     private val client: ServiceCreator.PlacesClient
 
     init {
-        store!!.subscribe(this)
-        client = serviceCreator!!.createService(ServiceCreator.PlacesClient::class.java)
+        store.subscribe(this)
+        client = serviceCreator.createService(ServiceCreator.PlacesClient::class.java)
     }
 
     @JvmOverloads
@@ -43,18 +43,18 @@ constructor(private val serviceCreator: ServiceCreator,
 
                     override fun onError(e: Throwable) {
                         Timber.e(e, "  error with exception")
-                        actionCreator!!.getPlacesFailed(e.toString())
+                        actionCreator.getPlacesFailed(e.toString())
                     }
 
                     override fun onNext(response: PlacesResponse) {
                         Timber.d("Got places status:" + response.status)
-                        actionCreator!!.placesDownloaded(response.results)
+                        actionCreator.placesDownloaded(response.results)
                     }
                 })
     }
 
     override fun onStateChanged() {
-        val state = store!!.state.state()
+        val state = store.state.state()
         //Timber.d("State Changed: %s",state.name());
         if (state == AppState.States.GET_PLACES) {
             getPlaces()
@@ -62,11 +62,11 @@ constructor(private val serviceCreator: ServiceCreator,
     }
 
     fun clearCache() {
-        serviceCreator!!.clearCacheForOkHTTP()
+        serviceCreator.clearCacheForOkHTTP()
     }
 
     fun close() {
-        serviceCreator!!.clearCacheForOkHTTP()
-        serviceCreator!!.close()
+        serviceCreator.clearCacheForOkHTTP()
+        serviceCreator.close()
     }
 }

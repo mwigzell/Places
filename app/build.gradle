@@ -126,7 +126,12 @@ dependencies {
     kaptTest "com.google.dagger:dagger-compiler:2.7"
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
 }
-repositories {
-    mavenCentral()
-}
 
+/*repositories {
+    mavenCentral()
+}*/
+
+apply plugin: 'kotlin-allopen'
+allOpen {
+    annotation('com.mwigzell.place.Mockable')
+}

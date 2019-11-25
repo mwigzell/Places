@@ -53,12 +53,6 @@ class MainActivity : DaggerAppCompatActivity(), Subscriber {
 
     lateinit internal var subscription: Subscription
 
-    /*@Inject lateinit var viewModelFactory: MainActivityViewModelFactory
-    private val viewModel: MainActivityViewModel by lazy {
-        ViewModelProviders.of(this, viewModelFactory)
-                .get(MainActivityViewModel::class.java)
-    }*/
-
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)

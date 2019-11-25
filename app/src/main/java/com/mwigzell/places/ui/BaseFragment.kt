@@ -2,6 +2,9 @@ package com.mwigzell.places.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 
 import com.mwigzell.places.data.LocationService
 import com.mwigzell.places.redux.AppAction
@@ -14,6 +17,14 @@ import dagger.android.support.DaggerFragment
 import javax.inject.Inject
 
 import timber.log.Timber
+
+/**
+ * extend LiveData with a function that always removes the observer before subscribing again
+ */
+fun <T> LiveData<T>.reObserve(owner: LifecycleOwner, observer: Observer<T>) {
+    removeObserver(observer)
+    observe(owner, observer)
+}
 
 /**
  *

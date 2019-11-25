@@ -10,6 +10,11 @@ import com.mwigzell.places.redux.AppAction
 import com.mwigzell.places.redux.AppState
 import com.mwigzell.places.redux.jedux.Store
 import com.mwigzell.places.redux.jedux.Subscriber
+import rx.Observable
+import rx.Single
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import timber.log.Timber
 
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -29,7 +34,7 @@ constructor(private val context: Context,
     lateinit internal var lastError: Exception
 
     init {
-        store!!.subscribe(this)
+        store.subscribe(this)
     }
 
     @Throws(Exception::class)
@@ -43,32 +48,30 @@ constructor(private val context: Context,
         return result
     }
 
+    fun fetchTypes(): Observable<List<Type>> {
+        return Single.fromCallable {
+            loadTypes()
+        }.toObservable()
+    }
+
     override fun onStateChanged() {
         //Timber.d("got state: " + store.getState().state);
-        when (store!!.state.state()) {
+        when (store.state.state()) {
             AppState.States.LOAD_TYPES -> {
-                val types = store!!.state.types()
-                val loadTypes = object : AsyncTask<Any, Void, List<Type>>() {
-                    override fun doInBackground(vararg params: Any): List<Type>? {
-                        var result: List<Type>? = null
-                        if (types.size == 0) {
-                            try {
-                                result = loadTypes()
-                            } catch (e: Exception) {
-                                lastError = e
+                val types = store.state.types()
+                if (types.size == 0) {
+                    fetchTypes()
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnError {
+                                Timber.e(it)}
+                            .subscribe {
+                                actionCreator.typesLoaded(it)
                             }
 
-                        } else {
-                            result = types
-                        }
-                        return result
-                    }
-
-                    override fun onPostExecute(types: List<Type>) {
-                        actionCreator!!.typesLoaded(types)
-                    }
+                } else {
+                    actionCreator.typesLoaded(types)
                 }
-                loadTypes.execute()
             }
         }
     }

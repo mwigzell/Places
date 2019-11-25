@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 
 import com.mwigzell.places.data.network.NetworkService
@@ -20,6 +21,7 @@ import javax.inject.Inject
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mwigzell.places.dagger.ViewModelFactory
+import com.mwigzell.places.model.Place
 import timber.log.Timber
 
 /**
@@ -36,12 +38,6 @@ class PlacesFragment : BaseFragment() {
 
     @BindView(com.mwigzell.places.R.id.myList)
     lateinit internal var recyclerView: RecyclerView
-
-    @Inject
-    lateinit internal var actionCreator: ActionCreator
-
-    @Inject
-    lateinit internal var networkService: NetworkService
 
     @Inject
     lateinit internal var adapter: PlacesViewAdapter
@@ -68,63 +64,52 @@ class PlacesFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         Timber.d("onActivityCreated")
 
-        noResults!!.visibility = View.GONE
-        progressSpinner!!.visibility = View.VISIBLE
-        recyclerView!!.setHasFixedSize(true)
+        noResults.visibility = View.GONE
+        progressSpinner.visibility = View.VISIBLE
+        recyclerView.setHasFixedSize(true)
         val llm = LinearLayoutManager(activity)
         llm.orientation = LinearLayoutManager.VERTICAL
-        recyclerView!!.layoutManager = llm
+        recyclerView.layoutManager = llm
         super.checkResumeLocation()
-        recyclerView!!.adapter = adapter
-        fetchPlaces()
+        recyclerView.adapter = adapter
+
+        observeViews()
+
+        mainViewModel.fetchPlaces()
     }
 
-    private fun fetchPlaces() {
-        val location = store.state.location()
-        val loc: String
-        if (location.longitude != 0.0 && location.latitude != 0.0) {
-            loc = location.latitude.toString() + "," + location.longitude
-        } else {
-            loc = DEFAULT_LOCATION
-        }
-        var i = store.state.selectedPosition()
-        var name = DEFAULT_TYPE
-        if (i < store.state.types().size)
-            name = store.state.types().get(i).name
-        networkService!!.getPlaces(loc, DEFAULT_RADIUS, name)
+    private fun observeViews() {
+        //Note: rely on Support Library 28.0.0 and AndroidX 1.0.0 to destroy observers
+        // every time fragment view is destroyed
+        mainViewModel.getPlaces().observe(this.viewLifecycleOwner, Observer<List<Place>> {
+            progressSpinner.visibility = View.GONE
+            adapter.setItems(it)
+            updateView()
+        })
+        mainViewModel.getNoResults().observe( this, Observer<Boolean> {
+            noResults.visibility = View.VISIBLE
+        })
     }
 
     private fun updateView() {
         if (adapter.itemCount > 0) {
-            noResults!!.visibility = View.GONE
+            noResults.visibility = View.GONE
         } else {
-            noResults!!.visibility = View.VISIBLE
+            noResults.visibility = View.VISIBLE
         }
     }
 
     override fun onResume() {
         super.onResume()
+        mainViewModel.onResume()
         updateView()
     }
 
-    override fun onStateChanged() {
-        val state = store.state.state()
-        //Timber.d("Got state=" + state);
-        when (state) {
-            AppState.States.PLACES_DOWNLOADED -> {
-                progressSpinner!!.visibility = View.GONE
-                adapter.setItems(store.state.placeState().places)
-                updateView()
-            }
-            AppState.States.GET_PLACES_FAILED -> noResults!!.visibility = View.VISIBLE
-            AppState.States.LOCATION_UPDATED -> {
-            }
-        }
+    override fun onPause() {
+        super.onPause()
+        mainViewModel.onPause()
     }
 
-    companion object {
-        val DEFAULT_LOCATION = "-33.8670522,151.1957362"
-        val DEFAULT_TYPE = "food&name=harbour"
-        val DEFAULT_RADIUS = "5000"
+    override fun onStateChanged() {
     }
 }

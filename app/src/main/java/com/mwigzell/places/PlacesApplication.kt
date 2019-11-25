@@ -16,11 +16,17 @@ import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import javax.inject.Inject
 
+//TODO: Fix mocking ViewModels
+//TODO: Fix @Mockable
+//TODO: Remove & Replace ActionCreator actions
+//TODO: Redo UI so it works, use types as paging tabbed header, also as choice list
+//TODO: Introduce Jetpack Navigator
+//TODO: Architect the Repository abstraction behind ViewModels
+//TODO: Run memory analyzer
 
 /**
  * Created by mwigzell on 12/10/16.
  */
-
 open class PlacesApplication @Inject constructor(): DaggerApplication(), Subscriber{
 
     @Inject
@@ -32,7 +38,7 @@ open class PlacesApplication @Inject constructor(): DaggerApplication(), Subscri
     @Inject
     lateinit internal var dataService: DataService
 
-    open lateinit protected var dependencyInjector: AndroidInjector<PlacesApplication>
+    lateinit protected var dependencyInjector: AndroidInjector<PlacesApplication>
 
     open protected fun createInjector(): AndroidInjector<PlacesApplication> {
         return DaggerAppComponent
