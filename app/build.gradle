@@ -133,5 +133,5 @@ dependencies {
 
 apply plugin: 'kotlin-allopen'
 allOpen {
-    annotation('com.mwigzell.place.Mockable')
+    annotation('com.mwigzell.places.Mockable')
 }

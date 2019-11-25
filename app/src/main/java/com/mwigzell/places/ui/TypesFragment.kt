@@ -75,17 +75,4 @@ class TypesFragment : BaseFragment() {
             adapter.setItems(it)
         })
     }
-
-    override fun onResume() {
-        super.onResume()
-        mainViewModel.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mainViewModel.onPause()
-    }
-
-    override fun onStateChanged() {
-    }
 }

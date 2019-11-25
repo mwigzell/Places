@@ -45,7 +45,7 @@ class DataServiceTest {
         preferences.edit().remove("data").commit()
 
         val actionCreator = ActionCreator(store)
-        dataService = DataService(context, actionCreator, store!!)
+        dataService = DataService(context)
     }
 
     @After
@@ -56,9 +56,9 @@ class DataServiceTest {
     @Test
     @Throws(Exception::class)
     fun loadTypes() {
-        val types = dataService.loadTypes()
-
-        assertNotNull(types)
-        assertTrue(types.size > 0)
+        dataService.fetchTypes()
+                .subscribe {
+                    assertTrue(it.size > 0)
+                }
     }
 }

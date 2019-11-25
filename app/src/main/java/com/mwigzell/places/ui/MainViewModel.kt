@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mwigzell.places.Mockable
+import com.mwigzell.places.data.DataService
 import com.mwigzell.places.data.LocationService
 import com.mwigzell.places.data.network.NetworkService
 import com.mwigzell.places.model.Place
@@ -14,17 +15,20 @@ import com.mwigzell.places.redux.AppState
 import com.mwigzell.places.redux.jedux.Store
 import com.mwigzell.places.redux.jedux.Subscriber
 import com.mwigzell.places.redux.jedux.Subscription
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 
 @Mockable
-open class MainViewModel @Inject constructor(
+class MainViewModel @Inject constructor(
         val store: Store<AppAction<Any>, AppState>,
         val networkService: NetworkService,
         val locationService: LocationService,
+        val dataService: DataService,
         val actionCreator: ActionCreator
-): ViewModel(), Subscriber {
+): ViewModel() {
 
-    internal var subscription: Subscription? = null
     private val places: MutableLiveData<List<Place>> = MutableLiveData()
     private val noResults: MutableLiveData<Boolean> = MutableLiveData()
     private val types: MutableLiveData<List<Type>> = MutableLiveData()
@@ -47,33 +51,27 @@ open class MainViewModel @Inject constructor(
         if (i < store.state.types().size)
             name = store.state.types().get(i).name
         networkService!!.getPlaces(loc, DEFAULT_RADIUS, name)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError {
+                    Timber.e(it, "<--  error with exception")
+                    noResults.setValue(true)
+                }
+                .subscribe {
+                    Timber.d("<-- Got places status:" + it.status)
+                    places.setValue(it.results)
+                }
     }
 
     fun loadTypes() {
-        actionCreator.loadTypes()
-    }
-
-    fun onResume() {
-        subscription = store.subscribe(this)
-    }
-
-    fun onPause() {
-        subscription?.unsubscribe()
-    }
-
-    override fun onStateChanged() {
-        val state = store.state.state()
-        when (state) {
-            AppState.States.PLACES_DOWNLOADED -> {
-                places.setValue(store.state.placeState().places)
-            }
-            AppState.States.GET_PLACES_FAILED -> noResults.setValue(true)
-            AppState.States.LOCATION_UPDATED -> {
-            }
-            AppState.States.TYPES_LOADED -> {
-               types.setValue(store.state.types())
-            }
-        }
+        dataService.fetchTypes()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError {
+                    Timber.e(it)}
+                .subscribe {
+                    types.setValue(it)
+                }
     }
 
     companion object {

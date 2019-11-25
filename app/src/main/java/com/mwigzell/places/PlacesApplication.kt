@@ -1,14 +1,7 @@
 package com.mwigzell.places
 
 import com.crashlytics.android.Crashlytics
-import com.mwigzell.places.dagger.AppComponent
 import com.mwigzell.places.dagger.DaggerAppComponent
-import com.mwigzell.places.data.DataService
-import com.mwigzell.places.redux.ActionCreator
-import com.mwigzell.places.redux.AppAction
-import com.mwigzell.places.redux.AppState
-import com.mwigzell.places.redux.jedux.Store
-import com.mwigzell.places.redux.jedux.Subscriber
 import com.mwigzell.places.util.Log
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
@@ -17,7 +10,6 @@ import timber.log.Timber
 import javax.inject.Inject
 
 //TODO: Fix mocking ViewModels
-//TODO: Fix @Mockable
 //TODO: Remove & Replace ActionCreator actions
 //TODO: Redo UI so it works, use types as paging tabbed header, also as choice list
 //TODO: Introduce Jetpack Navigator
@@ -27,16 +19,7 @@ import javax.inject.Inject
 /**
  * Created by mwigzell on 12/10/16.
  */
-open class PlacesApplication @Inject constructor(): DaggerApplication(), Subscriber{
-
-    @Inject
-    lateinit internal var store: Store<AppAction<Any>, AppState>
-
-    @Inject
-    lateinit internal var actionCreator: ActionCreator
-
-    @Inject
-    lateinit internal var dataService: DataService
+open class PlacesApplication @Inject constructor(): DaggerApplication() {
 
     lateinit protected var dependencyInjector: AndroidInjector<PlacesApplication>
 
@@ -68,18 +51,6 @@ open class PlacesApplication @Inject constructor(): DaggerApplication(), Subscri
         }
         Log.init(this)
         Timber.d("Hi ho!, its off to work we go!!!")
-
-        store.subscribe(this)
-
-        when (store.state.state()) {
-            AppState.States.INIT -> actionCreator.init()
-            AppState.States.RESTARTED -> actionCreator.init()
-            else -> actionCreator.restart()
-        }
-    }
-
-    override fun onStateChanged() {
-        //Timber.d("Got state change");
     }
 
     companion object {

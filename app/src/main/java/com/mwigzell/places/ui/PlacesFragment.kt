@@ -98,18 +98,4 @@ class PlacesFragment : BaseFragment() {
             noResults.visibility = View.VISIBLE
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        mainViewModel.onResume()
-        updateView()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mainViewModel.onPause()
-    }
-
-    override fun onStateChanged() {
-    }
 }

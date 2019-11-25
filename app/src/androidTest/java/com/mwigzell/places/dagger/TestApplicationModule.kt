@@ -2,6 +2,7 @@ package com.mwigzell.places.dagger
 
 import android.content.Context
 import android.location.Location
+import com.mwigzell.places.model.Type
 import com.mwigzell.places.redux.*
 import com.mwigzell.places.redux.jedux.Logger
 import com.mwigzell.places.redux.jedux.Store
@@ -28,7 +29,7 @@ class TestApplicationModule() {
                 .placeState(PlaceState())
                 .state(AppState.States.INIT)
                 .lastError("")
-                .types(ArrayList())
+                .types(ArrayList<Type>())
                 .location(Location("init"))
                 .selectedPosition(0)
                 .build()
