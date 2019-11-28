@@ -7,71 +7,76 @@ import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import androidx.core.content.ContextCompat
-
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
-import com.mwigzell.places.redux.ActionCreator
-import com.mwigzell.places.redux.AppAction
-import com.mwigzell.places.redux.AppState
-import com.mwigzell.places.redux.jedux.Store
-import com.mwigzell.places.redux.jedux.Subscriber
-import com.mwigzell.places.redux.jedux.Subscription
-
+import com.mwigzell.places.model.PlaceLocation
+import rx.Observable
+import rx.subjects.BehaviorSubject
+import timber.log.Timber
 import java.text.DecimalFormat
-
 import javax.inject.Inject
 import javax.inject.Singleton
 
-import timber.log.Timber
+//TODO: pause and resume location updates according to life cycle and location permission
+//TODO: persist last known location
 
 @Singleton
 class LocationService @Inject
-constructor(private val context: Context,
-            private val actionCreator: ActionCreator,
-            store: Store<AppAction<Any>, AppState>
-) : Subscriber, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+constructor(private val context: Context
+) : GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private val dm = DecimalFormat("0.0")
-
-    private val mSubscription: Subscription
 
     private var mLocationClient: GoogleApiClient? = null
     private var mLocationRequest: LocationRequest? = null
     private var mLastLocation: Location? = null
+    lateinit private var locationSubject: BehaviorSubject<PlaceLocation>
 
     init {
-        mSubscription = store.subscribe(this)
+        initService()
     }
 
-    override fun onStateChanged() {
+    private fun initService() {
+        //PlaceLocation client is needed to get at least one location
         if (mLocationClient == null) {
-            locationCreation()
-        }
-    }
-
-    private fun locationCreation() {
-        //Location client is needed to get at least one location
-        if (mLocationClient == null) {
-            mLocationClient = GoogleApiClient.Builder(context!!)
+            mLocationClient = GoogleApiClient.Builder(context)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build()
             mLocationClient!!.connect()
         }
-        //Location request gets periodic updates on location
+        //PlaceLocation request gets periodic updates on location
         if (mLocationRequest == null) {
             mLocationRequest = LocationRequest()
             mLocationRequest!!.interval = LOCATION_UPDATE_INTERVAL.toLong()
             mLocationRequest!!.fastestInterval = LOCATION_UPDATE_FASTEST_INTERVAL.toLong()
-            mLocationRequest!!.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            mLocationRequest!!.priority = LocationRequest.PRIORITY_LOW_POWER
+        }
+
+        if (mLastLocation != null) {
+            locationSubject = BehaviorSubject.create(PlaceLocation(mLastLocation!!.latitude, mLastLocation!!.longitude))
+        } else {
+            locationSubject = BehaviorSubject.create(getDefaultLocation())
         }
     }
 
-    //public Location getLastLocation() { return mLastLocation; }
+    fun getDefaultLocation(): PlaceLocation {
+        return PlaceLocation(DEFAULT_LOCATION)
+    }
+
+    fun latLongStrToLocation(str: String): Location {
+        val location = Location("LocationService")
+        val degrees = str.split(',')
+        location.latitude = degrees.get(0).toDouble()
+        location.longitude = degrees.get(1).toDouble()
+        return location
+    }
+
+    //public PlaceLocation getLastLocation() { return mLastLocation; }
 
     fun locationResume() {
         Timber.d("locationResume")
@@ -95,7 +100,7 @@ constructor(private val context: Context,
             //Starts the location service
             LocationServices.FusedLocationApi.requestLocationUpdates(mLocationClient, mLocationRequest, this)
 
-            //When there is no location to check and no Location show an error
+            //When there is no location to check and no PlaceLocation show an error
             if (mLastLocation == null && !hasLocationsEnabled())
                 Timber.d("no lastLocation and locations not enabled")
         } else {
@@ -109,8 +114,17 @@ constructor(private val context: Context,
         }
     }
 
+    fun observeLocationChanges(): Observable<PlaceLocation> {
+        return locationSubject
+    }
+
     override fun onLocationChanged(location: Location) {
         updateLastKnownLocation(location)
+    }
+
+    private fun updateLastKnownLocation(location: Location) {
+        mLastLocation = location
+        locationSubject.onNext(PlaceLocation(location.latitude, location.longitude))
     }
 
     override fun onConnected(connectionHint: Bundle?) {
@@ -130,19 +144,14 @@ constructor(private val context: Context,
         Timber.d("connection failed")
     }
 
-    private fun updateLastKnownLocation(location: Location) {
-        mLastLocation = location
-        actionCreator!!.locationUpdated(location)
-    }
-
     fun hasLocationPermissions(): Boolean {
-        return ContextCompat.checkSelfPermission(context!!,
+        return ContextCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
 
     fun hasLocationsEnabled(): Boolean {
         // Get GPS and network status
-        val locationManager = context!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         val isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         return isGPSEnabled || isNetworkEnabled
@@ -160,10 +169,11 @@ constructor(private val context: Context,
     }
 
     companion object {
-
         val LOCATION_UPDATE_INTERVAL = 60 * 1000 //1 minute in millisecons
         val LOCATION_UPDATE_FASTEST_INTERVAL = 30 * 1000 //0.5 minute in milliseconds
         private val METERS_TO_MILES_CONVERSION = 0.000621371192
+
+        val DEFAULT_LOCATION = "-33.8670522,151.1957362"
     }
 
 }

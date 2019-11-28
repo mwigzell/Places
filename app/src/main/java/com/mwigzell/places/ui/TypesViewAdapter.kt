@@ -11,23 +11,25 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.mwigzell.places.R
 import com.mwigzell.places.model.Type
-import com.mwigzell.places.redux.ActionCreator
+import rx.Observable
+import rx.subjects.PublishSubject
 
 import java.util.ArrayList
 
 import javax.inject.Inject
-
-import timber.log.Timber
 
 /**
  * Adapt List<String> to RecyclerView
 </String> */
 
 class TypesViewAdapter @Inject
-internal constructor(private val actionCreator: ActionCreator
+internal constructor(
 ) : RecyclerView.Adapter<TypesViewAdapter.ListItemViewHolder>() {
     private var items: List<Type>? = null
     private val selectedItems: SparseBooleanArray
+    private val clickSubject = PublishSubject.create<Type>()
+
+    val clickEvent: Observable<Type> = clickSubject
 
     init {
         items = ArrayList()
@@ -65,7 +67,7 @@ internal constructor(private val actionCreator: ActionCreator
         return items?.size ?: 0
     }
 
-    inner class ListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    inner class ListItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         internal var nameView: TextView
         internal var imageView: ImageView
         internal var boundModel: Type? = null
@@ -73,12 +75,9 @@ internal constructor(private val actionCreator: ActionCreator
         init {
             nameView = itemView.findViewById<View>(R.id.name) as TextView
             imageView = itemView.findViewById<View>(R.id.imageView) as ImageView
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(view: View) {
-            Timber.d("onClick: " + nameView.text + " position: " + adapterPosition)
-            actionCreator!!.selectType(adapterPosition)
+            itemView.setOnClickListener {
+                clickSubject.onNext(boundModel)
+            }
         }
     }
 }

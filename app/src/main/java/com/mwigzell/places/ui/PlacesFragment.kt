@@ -2,8 +2,6 @@ package com.mwigzell.places.ui
 
 import android.content.Context
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,22 +9,16 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-
-import com.mwigzell.places.data.network.NetworkService
-import com.mwigzell.places.redux.ActionCreator
-import com.mwigzell.places.redux.AppState
-
-import javax.inject.Inject
-
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.mwigzell.places.dagger.ViewModelFactory
 import com.mwigzell.places.model.Place
 import timber.log.Timber
+import javax.inject.Inject
 
-/**
- *
- */
+//TODO: persist last get places response
 
 class PlacesFragment : BaseFragment() {
 
@@ -74,8 +66,6 @@ class PlacesFragment : BaseFragment() {
         recyclerView.adapter = adapter
 
         observeViews()
-
-        mainViewModel.fetchPlaces()
     }
 
     private fun observeViews() {

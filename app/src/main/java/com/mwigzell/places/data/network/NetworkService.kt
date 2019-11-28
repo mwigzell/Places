@@ -2,10 +2,6 @@ package com.mwigzell.places.data.network
 
 import com.mwigzell.places.PlacesApplication
 import com.mwigzell.places.model.PlacesResponse
-import com.mwigzell.places.redux.ActionCreator
-import com.mwigzell.places.redux.AppAction
-import com.mwigzell.places.redux.AppState
-import com.mwigzell.places.redux.jedux.Store
 import rx.Observable
 import timber.log.Timber
 import javax.inject.Inject

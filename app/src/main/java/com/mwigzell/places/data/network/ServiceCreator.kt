@@ -87,7 +87,7 @@ constructor(private val context: Context,
         override fun intercept(chain: Interceptor.Chain): Response {
             var request = chain.request()
 
-            if (!androidServices!!.isNetwork && isChachableRequest(chain)) {
+            if (!androidServices.isNetwork && isChachableRequest(chain)) {
                 Timber.d("Rewriting request")
 
                 val maxStale = 60 * 60 * 24 * 28 // tolerate 4-weeks stale
@@ -105,14 +105,14 @@ constructor(private val context: Context,
     }
 
     private fun createCacheForOkHTTP(): Cache {
-        return Cache(getDirectory(context!!), (1024 * 1024 * 10).toLong())
+        return Cache(getDirectory(context), (1024 * 1024 * 10).toLong())
     }
 
     fun clearCacheForOkHTTP() {
-        if (cache != null) {
+        cache?.let {
             try {
-                fileUtils!!.removeDir(File(context!!.externalCacheDir, RETROFIT_CACHE))
-                cache!!.delete()
+                fileUtils.removeDir(File(context.externalCacheDir, RETROFIT_CACHE))
+                it.delete()
             } catch (e: IOException) {
                 Timber.e(e, "%s - Exception with message: %s", RETROFIT_CACHE, e.message)
             }

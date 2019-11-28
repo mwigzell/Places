@@ -20,7 +20,7 @@ constructor(private val context: Context) {
     @Throws(Exception::class)
     private fun loadTypes(): List<Type> {
         val result = ArrayList<Type>()
-        val reader = BufferedReader(InputStreamReader(context!!.assets.open("types.txt")))
+        val reader = BufferedReader(InputStreamReader(context.assets.open("types.txt")))
         while (true) {
             val line = reader.readLine() ?: break
             result.add(Type(line))

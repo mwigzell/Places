@@ -2,28 +2,20 @@ package com.mwigzell.places.ui
 
 import android.content.res.Configuration
 import android.os.Bundle
-import com.google.android.material.navigation.NavigationView
-import androidx.fragment.app.Fragment
-import androidx.drawerlayout.widget.DrawerLayout
+import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
-import android.view.MenuItem
-
-import com.mwigzell.places.R
-import com.mwigzell.places.redux.ActionCreator
-import com.mwigzell.places.redux.AppAction
-import com.mwigzell.places.redux.AppState
-import com.mwigzell.places.redux.jedux.Store
-import com.mwigzell.places.redux.jedux.Subscriber
-import com.mwigzell.places.redux.jedux.Subscription
-
-import javax.inject.Inject
-
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.google.android.material.navigation.NavigationView
+import com.mwigzell.places.R
 import dagger.Module
-import dagger.android.*
+import dagger.android.AndroidInjection
+import dagger.android.ContributesAndroidInjector
 import dagger.android.support.DaggerAppCompatActivity
+import javax.inject.Inject
 
 // We can define this anywhere we like, but it's convenient to include
 // in the same file as the class being injected
@@ -33,7 +25,7 @@ import dagger.android.support.DaggerAppCompatActivity
     @ContributesAndroidInjector abstract fun placesFragment(): PlacesFragment
 }
 
-class MainActivity : DaggerAppCompatActivity(), Subscriber {
+class MainActivity : DaggerAppCompatActivity() {
     @BindView(R.id.drawer_layout)
     lateinit internal var mDrawer: DrawerLayout
 
@@ -45,14 +37,6 @@ class MainActivity : DaggerAppCompatActivity(), Subscriber {
 
     private var drawerToggle: ActionBarDrawerToggle? = null
 
-    @Inject
-    lateinit internal var actionCreator: ActionCreator
-
-    @Inject
-    lateinit internal var store: Store<AppAction<Any>, AppState>
-
-    lateinit internal var subscription: Subscription
-
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
@@ -60,12 +44,11 @@ class MainActivity : DaggerAppCompatActivity(), Subscriber {
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
         setSupportActionBar(toolbar)
-        setupDrawerContent(nvDrawer!!)
+        setupDrawerContent(nvDrawer)
         drawerToggle = setupDrawerToggle()
         // Tie DrawerLayout events to the ActionBarToggle
-        mDrawer!!.addDrawerListener(drawerToggle!!)
-        selectDrawerItem(nvDrawer!!.menu.getItem(0))
-        //actionCreator.init();
+        mDrawer.addDrawerListener(drawerToggle!!)
+        selectDrawerItem(nvDrawer.menu.getItem(0))
     }
 
     // `onPostCreate` called when activity start-up is complete after `onStart()`
@@ -98,7 +81,7 @@ class MainActivity : DaggerAppCompatActivity(), Subscriber {
     }
 
     private fun replaceFragment(fragmentClass: Class<*>) {
-        var fragment: Fragment? = null
+        var fragment: Fragment
         try {
             fragment = fragmentClass.newInstance() as Fragment
         } catch (e: Exception) {
@@ -112,8 +95,6 @@ class MainActivity : DaggerAppCompatActivity(), Subscriber {
     }
 
     private fun selectDrawerItem(menuItem: MenuItem) {
-        // Create a new fragment and specify the fragment to show based on nav item clicked
-        val fragment: Fragment? = null
         val fragmentClass: Class<*>
         when (menuItem.itemId) {
             R.id.nav_first_fragment -> fragmentClass = PlacesFragment::class.java
@@ -129,7 +110,7 @@ class MainActivity : DaggerAppCompatActivity(), Subscriber {
         // Set action bar title
         title = menuItem.title
         // Close the navigation drawer
-        mDrawer!!.closeDrawers()
+        mDrawer.closeDrawers()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -146,26 +127,4 @@ class MainActivity : DaggerAppCompatActivity(), Subscriber {
     fun moveToTypes() {
         replaceFragment(TypesFragment::class.java)
     }
-
-    override fun onStateChanged() {
-        val state = store!!.state.state()
-        //Timber.d("Got state=" + state);
-        when (state) {
-            AppState.States.SELECTED_TYPE -> moveToPlaces()
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        subscription = store!!.subscribe(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        subscription.unsubscribe()
-    }
-
-
 }

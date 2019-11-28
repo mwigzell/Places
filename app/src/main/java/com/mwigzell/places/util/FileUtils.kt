@@ -36,12 +36,12 @@ constructor(private val context: Context) {
         get() {
             var path: File?
             if (isExternalStorageReadable && isExternalStorageWritable) {
-                path = context!!.getExternalFilesDir(null)
+                path = context.getExternalFilesDir(null)
                 if (path == null || !path.exists()) {
-                    path = context!!.filesDir
+                    path = context.filesDir
                 }
             } else
-                path = context!!.filesDir
+                path = context.filesDir
             if (DEBUG) {
                 try {
                     Timber.d("Storing files in: " + path!!.canonicalPath)

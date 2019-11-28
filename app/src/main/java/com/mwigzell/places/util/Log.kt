@@ -27,7 +27,6 @@ object Log {
             val stackElement = Thread.currentThread().stackTrace
             var className = stackElement[stackIndex].className
             val index = className.lastIndexOf('.')
-            val now = System.currentTimeMillis()
             if (index != -1)
                 className = className.substring(index + 1)
             str = String.format(Locale.US, "%s: %s.%s:%d", app, className, stackElement[stackIndex].methodName, stackElement[stackIndex].lineNumber)

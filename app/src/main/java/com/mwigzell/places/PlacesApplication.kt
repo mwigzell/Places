@@ -15,6 +15,8 @@ import javax.inject.Inject
 //TODO: Introduce Jetpack Navigator
 //TODO: Architect the Repository abstraction behind ViewModels
 //TODO: Run memory analyzer
+//TODO: Add okhttp's MockWebServer
+//TODO: Get offline mode by using both Couchbase and ROOM variants
 
 /**
  * Created by mwigzell on 12/10/16.

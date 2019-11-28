@@ -18,6 +18,8 @@ import com.mwigzell.places.model.Type
 import timber.log.Timber
 import javax.inject.Inject
 
+//TODO: persist last types list
+
 /**
  * Show types in a list
  */
@@ -74,5 +76,11 @@ class TypesFragment : BaseFragment() {
             progressSpnner.visibility = View.GONE
             adapter.setItems(it)
         })
+
+        adapter.clickEvent.subscribe {
+            Timber.d("clicked on $it")
+            mainViewModel.onTypeSelected(it)
+            (activity as MainActivity).moveToPlaces()
+        }
     }
 }
