@@ -1,24 +1,20 @@
 package com.mwigzell.places.ui
 
 import android.content.Intent
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.mwigzell.places.AsyncTaskSchedulerRule
 import com.mwigzell.places.R
 import com.mwigzell.places.RecyclerViewMatcher
 import com.mwigzell.places.TestApplication
 import com.mwigzell.places.dagger.MockViewModelModule
-import com.mwigzell.places.dagger.TestApplicationComponent
-import com.mwigzell.places.dagger.ViewModelFactory
 import com.mwigzell.places.model.Place
 import org.junit.Before
 import org.junit.Rule
@@ -26,7 +22,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
-import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
@@ -43,7 +38,7 @@ class MainActivityTest {
 
     @Before
     fun setUp() {
-        //MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.initMocks(this)
 
         val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
         app.getInjector().inject(this)
