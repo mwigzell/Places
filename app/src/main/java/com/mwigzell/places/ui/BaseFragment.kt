@@ -2,7 +2,7 @@ package com.mwigzell.places.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
-import com.mwigzell.places.data.LocationService
+import com.mwigzell.places.repository.LocationService
 import dagger.android.support.DaggerFragment
 import timber.log.Timber
 import javax.inject.Inject
@@ -17,9 +17,7 @@ abstract class BaseFragment : DaggerFragment() {
     lateinit internal var locationService: LocationService
 
     fun checkResumeLocation() {
-        if (locationService.hasLocationPermissions()) {
-            locationService.locationResume()
-        } else {
+        if (!locationService.hasLocationPermissions()) {
             this.requestPermissions(
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                     REQUEST_CODE)
@@ -37,6 +35,16 @@ abstract class BaseFragment : DaggerFragment() {
                 Timber.d("no location permission")
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        locationService.locationPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        locationService.locationResume()
     }
 
     companion object {

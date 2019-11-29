@@ -1,17 +1,17 @@
 package com.mwigzell.places.ui
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.mwigzell.places.Mockable
-import com.mwigzell.places.data.DataService
-import com.mwigzell.places.data.LocationService
-import com.mwigzell.places.data.network.NetworkService
+import com.mwigzell.places.repository.LocationService
+import com.mwigzell.places.repository.network.NetworkService
 import com.mwigzell.places.model.Place
 import com.mwigzell.places.model.PlaceLocation
 import com.mwigzell.places.model.Type
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
+import com.mwigzell.places.repository.PlacesRepository
+import com.mwigzell.places.repository.TypesRepository
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -19,16 +19,17 @@ import javax.inject.Inject
 
 @Mockable
 class MainViewModel @Inject constructor(
+        val typesRepository: TypesRepository,
+        val placesRepository: PlacesRepository,
         val networkService: NetworkService,
-        val locationService: LocationService,
-        val dataService: DataService
+        val locationService: LocationService
 ): ViewModel() {
 
-    private val places: MutableLiveData<List<Place>> = MutableLiveData()
-    private val noResults: MutableLiveData<Boolean> = MutableLiveData()
-    private val types: MutableLiveData<List<Type>> = MutableLiveData()
+    private val places: MediatorLiveData<List<Place>> = MediatorLiveData()
+    private val types: LiveData<List<Type>> = typesRepository.loadTypes()
     private lateinit var location: PlaceLocation
     private var type: Type? = null
+    private var placesSource: LiveData<List<Place>>? = null
 
     init {
        location = locationService.getDefaultLocation()
@@ -37,43 +38,25 @@ class MainViewModel @Inject constructor(
                     location = it
                     Timber.d("Got new location $it")
                 }
-        fetchPlaces()
+        loadPlaces()
     }
 
     fun getPlaces(): LiveData<List<Place>> { return places }
-    fun getNoResults(): LiveData<Boolean> { return noResults }
     fun getTypes(): LiveData<List<Type>> { return types }
 
-    fun fetchPlaces() {
+    fun loadPlaces() {
         var name = DEFAULT_TYPE
         type?.let { name = it.name }
-        networkService.getPlaces(location.toString(), DEFAULT_RADIUS, name)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError {
-                    Timber.e(it, "<--  error with exception")
-                    noResults.setValue(true)
-                }
-                .subscribe {
-                    Timber.d("<-- Got places status:" + it.status)
-                    places.setValue(it.results)
-                }
-    }
-
-    fun loadTypes() {
-        dataService.fetchTypes()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError {
-                    Timber.e(it)}
-                .subscribe {
-                    types.setValue(it)
-                }
+        val placesLiveData = placesRepository.loadPlaces(location.toString(), DEFAULT_RADIUS, name)
+        placesSource?.let { places.removeSource(it)}
+        places.addSource(placesLiveData) {
+            places.value = it
+        }
     }
 
     fun onTypeSelected(type: Type) {
         this.type = type
-        fetchPlaces()
+        loadPlaces()
     }
 
     companion object {

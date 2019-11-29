@@ -16,9 +16,9 @@ import org.junit.runner.RunWith
  *
  */
 @RunWith(AndroidJUnit4::class)
-class DataServiceTest {
+class FileServiceTest {
 
-    lateinit internal var dataService: DataService
+    lateinit internal var fileService: FileService
     lateinit internal var preferences: SharedPreferences
 
     @Before
@@ -32,7 +32,7 @@ class DataServiceTest {
         preferences = context.getSharedPreferences("data", 0)
         preferences.edit().remove("data").commit()
 
-        dataService = DataService(context)
+        fileService = FileService(context)
     }
 
     @After
@@ -43,7 +43,7 @@ class DataServiceTest {
     @Test
     @Throws(Exception::class)
     fun loadTypes() {
-        dataService.fetchTypes()
+        fileService.fetchTypes()
                 .subscribe {
                     assertTrue(it.size > 0)
                 }

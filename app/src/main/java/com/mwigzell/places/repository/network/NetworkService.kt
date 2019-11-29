@@ -1,8 +1,8 @@
-package com.mwigzell.places.data.network
+package com.mwigzell.places.repository.network
 
 import com.mwigzell.places.PlacesApplication
 import com.mwigzell.places.model.PlacesResponse
-import rx.Observable
+import io.reactivex.Observable
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton

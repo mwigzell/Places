@@ -2,19 +2,18 @@ package com.mwigzell.places.repository
 
 import android.content.Context
 import com.mwigzell.places.model.Type
-import rx.Observable
-import rx.Single
+import io.reactivex.Observable
+import io.reactivex.Single
 import java.io.BufferedReader
 import java.io.InputStreamReader
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- *
+ * Retrieve model data from local files
  */
 @Singleton
-class DataService @Inject
+class FileService @Inject
 constructor(private val context: Context) {
 
     @Throws(Exception::class)

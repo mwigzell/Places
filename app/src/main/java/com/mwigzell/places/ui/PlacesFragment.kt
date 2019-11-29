@@ -76,9 +76,6 @@ class PlacesFragment : BaseFragment() {
             adapter.setItems(it)
             updateView()
         })
-        mainViewModel.getNoResults().observe( this, Observer<Boolean> {
-            noResults.visibility = View.VISIBLE
-        })
     }
 
     private fun updateView() {

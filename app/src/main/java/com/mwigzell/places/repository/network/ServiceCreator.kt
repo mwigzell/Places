@@ -1,4 +1,4 @@
-package com.mwigzell.places.data.network
+package com.mwigzell.places.repository.network
 
 
 import android.content.Context
@@ -6,6 +6,7 @@ import android.content.Context
 import com.mwigzell.places.model.PlacesResponse
 import com.mwigzell.places.util.AndroidServices
 import com.mwigzell.places.util.FileUtils
+import io.reactivex.Observable
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -15,11 +16,10 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
-import rx.Observable
 import timber.log.Timber
 
 class ServiceCreator @Inject
@@ -43,7 +43,7 @@ constructor(private val context: Context,
         //httpClient.authenticator(new TokenAuthenticator(context));
         cache = createCacheForOkHTTP()
         httpClient!!.cache(cache)
-        builder!!.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        builder!!.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         val retrofit = builder!!.client(httpClient!!.build()).build()
         return retrofit.create(serviceClass)
     }
@@ -56,7 +56,7 @@ constructor(private val context: Context,
         httpClient!!.readTimeout(60, TimeUnit.SECONDS)
         httpClient!!.connectTimeout(60, TimeUnit.SECONDS)
         //httpClient.addInterceptor(new AuthIntercepter(context));
-        builder!!.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        builder!!.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         val retrofit = builder!!.client(httpClient!!.build()).build()
         return retrofit.create(serviceClass)
     }

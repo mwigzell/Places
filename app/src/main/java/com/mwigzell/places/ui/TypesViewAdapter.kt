@@ -11,8 +11,8 @@ import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.mwigzell.places.R
 import com.mwigzell.places.model.Type
-import rx.Observable
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 
 import java.util.ArrayList
 
@@ -76,7 +76,7 @@ internal constructor(
             nameView = itemView.findViewById<View>(R.id.name) as TextView
             imageView = itemView.findViewById<View>(R.id.imageView) as ImageView
             itemView.setOnClickListener {
-                clickSubject.onNext(boundModel)
+                clickSubject.onNext(boundModel!!)
             }
         }
     }

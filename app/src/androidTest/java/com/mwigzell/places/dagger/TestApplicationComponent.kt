@@ -2,7 +2,7 @@ package com.mwigzell.places.dagger
 
 import android.content.Context
 import com.mwigzell.places.TestApplication
-import com.mwigzell.places.data.DataServiceTest
+import com.mwigzell.places.repository.FileServiceTest
 import com.mwigzell.places.ui.MainActivityTest
 import dagger.BindsInstance
 import dagger.Component
@@ -20,7 +20,7 @@ import javax.inject.Singleton
 )
 interface TestApplicationComponent : AppComponent {
     fun inject(test: TestApplication)
-    fun inject(test: DataServiceTest)
+    fun inject(test: FileServiceTest)
     fun inject(test: MainActivityTest)
 
     @Component.Factory

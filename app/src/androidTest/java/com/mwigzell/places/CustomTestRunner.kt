@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.os.AsyncTask
 import androidx.test.runner.AndroidJUnitRunner
-import rx.plugins.RxJavaHooks
-import rx.schedulers.Schedulers
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.Schedulers
 
 class CustomTestRunner : AndroidJUnitRunner() {
 
@@ -15,6 +15,7 @@ class CustomTestRunner : AndroidJUnitRunner() {
 
     override fun onStart() {
         RxJavaHooks.setOnIOScheduler { Schedulers.from(AsyncTask.THREAD_POOL_EXECUTOR) }
+        RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline())
         super.onStart()
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mwigzell.places.data.network;
+package com.mwigzell.places.repository.network;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

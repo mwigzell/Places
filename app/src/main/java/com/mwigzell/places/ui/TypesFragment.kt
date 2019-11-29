@@ -66,7 +66,6 @@ class TypesFragment : BaseFragment() {
         recyclerView.adapter = adapter
 
         observeViews()
-        mainViewModel.loadTypes()
     }
 
     private fun observeViews() {

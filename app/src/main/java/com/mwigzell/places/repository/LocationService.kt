@@ -1,4 +1,4 @@
-package com.mwigzell.places.data
+package com.mwigzell.places.repository
 
 import android.Manifest
 import android.content.Context
@@ -13,8 +13,8 @@ import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.mwigzell.places.model.PlaceLocation
-import rx.Observable
-import rx.subjects.BehaviorSubject
+import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import timber.log.Timber
 import java.text.DecimalFormat
 import javax.inject.Inject
@@ -57,9 +57,9 @@ constructor(private val context: Context
         }
 
         if (mLastLocation != null) {
-            locationSubject = BehaviorSubject.create(PlaceLocation(mLastLocation!!.latitude, mLastLocation!!.longitude))
+            locationSubject = BehaviorSubject.createDefault(PlaceLocation(mLastLocation!!.latitude, mLastLocation!!.longitude))
         } else {
-            locationSubject = BehaviorSubject.create(getDefaultLocation())
+            locationSubject = BehaviorSubject.createDefault(getDefaultLocation())
         }
     }
 

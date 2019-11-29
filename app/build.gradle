@@ -12,11 +12,10 @@ android {
     buildToolsVersion "28.0.3"
     defaultConfig {
         applicationId "com.mwigzell.places"
-        minSdkVersion 18
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        //testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunner "com.mwigzell.places.CustomTestRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -31,13 +30,29 @@ android {
         prod {
             dimension "version"
             // The actual minSdkVersion for the production version.
-            minSdkVersion 18
+            minSdkVersion 21
+        }
+    }
+    if(project.hasProperty("Places.properties")
+            && new File(project.property("Places.properties")).exists()) {
+
+        Properties props = new Properties()
+        props.load(new FileInputStream(file(project.property("Places.properties"))))
+
+        signingConfigs {
+            release {
+                storeFile file(props['keystore'])
+                storePassword props['keystore.password']
+                keyAlias props['keyAlias']
+                keyPassword props['keyPassword']
+            }
         }
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
@@ -64,40 +79,30 @@ dependencies {
     implementation 'androidx.vectordrawable:vectordrawable:1.0.0' // VectorDrawableCompat
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.0.0'
     implementation 'androidx.transition:transition:1.0.0'
-
-    implementation "androidx.core:core-ktx:+"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
-    /* Dagger2 - We are going to use dagger.android which includes
-     * support for Activity and fragment injection so we need to include
-     * the following dependencies */
+    implementation "androidx.core:core-ktx:1.0.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$KOTLIN_VERSION"
     implementation "com.google.dagger:dagger-android:$DAGGER_VERSION"
     implementation "com.google.dagger:dagger-android-support:$DAGGER_VERSION"
     kapt "com.google.dagger:dagger-android-processor:$DAGGER_VERSION"
-    /* Dagger2 - default dependency */
     kapt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
-
     compileOnly 'javax.annotation:jsr250-api:1.0'
     implementation 'com.jakewharton.timber:timber:4.3.1'
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true;
     }
-    implementation 'org.immutables:gson:2.1.14'
-    kapt 'org.immutables:value:2.1.14'
-    annotationProcessor 'org.immutables:value:2.1.14'
-    compileOnly 'org.immutables:value:2.1.14'
     implementation 'com.google.guava:guava:18.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.3.1'
-    implementation 'com.squareup.retrofit2:retrofit:2.1.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
-    implementation 'io.reactivex:rxandroid:1.2.1'
-    implementation 'io.reactivex:rxjava:1.2.1'
+    implementation "com.squareup.retrofit2:retrofit:$RETROFIT_VERSION"
+    implementation "com.squareup.retrofit2:converter-gson:$RETROFIT_VERSION"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$RETROFIT_VERSION"
+    implementation "io.reactivex.rxjava2:rxandroid:$RXJAVA2_VERSION"
+    implementation "io.reactivex.rxjava2:rxjava:$RXJAVA2_VERSION"
+    implementation "io.reactivex.rxjava2:rxkotlin:$RXKOTLIN_VERSION"
     kapt 'com.jakewharton:butterknife-compiler:10.2.0'
     implementation 'com.jakewharton:butterknife:10.2.0'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
 
-    kaptAndroidTest "com.google.dagger:dagger-compiler:2.17"
+    kaptAndroidTest "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
     androidTestImplementation 'androidx.annotation:annotation:1.0.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     // Set this dependency to use JUnit 4 rules
