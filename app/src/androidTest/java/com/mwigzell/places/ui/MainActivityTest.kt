@@ -30,14 +30,12 @@ import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
-    //@Rule val async = AsyncTaskSchedulerRule()
-
     @Rule
     @JvmField
     var activityRule = ActivityTestRule(MainActivity::class.java, true, false)
 
     lateinit var mainViewModel: MainViewModel
-    val places: LiveData<List<Place>> = MutableLiveData()
+    val places: MutableLiveData<List<Place>> = MutableLiveData()
 
     private fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {
         return RecyclerViewMatcher(recyclerViewId)
@@ -57,9 +55,21 @@ class MainActivityTest {
 
     @Test
     fun startActivity() {
-        //`when`(mainViewModel.getPlaces()).thenReturn(MutableLiveData())
         val position = 0
         onView(withId(R.id.myList)).perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position))
-        onView(withRecyclerView(R.id.myList).atPositionOnView(position, R.id.name)).check(matches(withText("Sydney")))
+        val placeList: ArrayList<Place> = ArrayList()
+        val place = Place()
+        val name = "Sydney"
+        place.name = name
+        val photos = ArrayList<Place.Photo>()
+        val photo = place.Photo()
+        photo.photoReference = "CmRaAAAA6U_i750l19d37AbcRN5JPw4JYx0uAlbESXoyNAQp6FU4szYPzwojN7x88Zs2etOQTK8QtFBZdVtki0WRggNONoHpSyr9cy4rslFNfkMkExgUCUHCslgt0YMHa0P1K3-4EhBMrLrKEbpobNmo9U0l3YrwGhTZNzjceIxjy2o3ZdLxhHkVRnEezw"
+        photos.add(photo)
+        placeList.add(place)
+        activityRule.activity.runOnUiThread {
+            places.value = placeList
+        }
+
+        onView(withRecyclerView(R.id.myList).atPositionOnView(position, R.id.name)).check(matches(withText(name)))
     }
 }
