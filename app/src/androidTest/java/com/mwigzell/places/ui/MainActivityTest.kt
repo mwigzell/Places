@@ -1,5 +1,7 @@
 package com.mwigzell.places.ui
 
+import android.content.Intent
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -10,11 +12,14 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
+import com.mwigzell.places.AsyncTaskSchedulerRule
 import com.mwigzell.places.R
 import com.mwigzell.places.RecyclerViewMatcher
 import com.mwigzell.places.TestApplication
+import com.mwigzell.places.dagger.MockViewModelModule
 import com.mwigzell.places.dagger.TestApplicationComponent
 import com.mwigzell.places.dagger.ViewModelFactory
+import com.mwigzell.places.model.Place
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -25,14 +30,14 @@ import javax.inject.Inject
 
 @RunWith(AndroidJUnit4::class)
 class MainActivityTest {
+    //@Rule val async = AsyncTaskSchedulerRule()
+
     @Rule
     @JvmField
-    var activityRule = ActivityTestRule(MainActivity::class.java, true, true)
+    var activityRule = ActivityTestRule(MainActivity::class.java, true, false)
 
-    //@Inject
-    //lateinit var viewModelFactory: ViewModelFactory
-
-    //lateinit var mainViewModel: MainViewModel
+    lateinit var mainViewModel: MainViewModel
+    val places: LiveData<List<Place>> = MutableLiveData()
 
     private fun withRecyclerView(recyclerViewId: Int): RecyclerViewMatcher {
         return RecyclerViewMatcher(recyclerViewId)
@@ -40,11 +45,14 @@ class MainActivityTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
+        //MockitoAnnotations.initMocks(this)
 
         val app = InstrumentationRegistry.getInstrumentation().targetContext.applicationContext as TestApplication
         app.getInjector().inject(this)
-        //mainViewModel = ViewModelProviders.of(activityRule.activity, viewModelFactory)[MainViewModel::class.java]
+        mainViewModel = MockViewModelModule.mainViewModel
+
+        `when`(mainViewModel.getPlaces()).thenReturn(places)
+        activityRule.launchActivity(Intent())
     }
 
     @Test

@@ -12,17 +12,18 @@ import javax.inject.Singleton
 
 @Mockable
 @Singleton
-class TypesRepository @Inject constructor(val fileService: FileService) {
+class TypesRepository @Inject constructor(val fileService: FileService): Repository() {
     fun loadTypes(): LiveData<List<Type>> {
         val types: MutableLiveData<List<Type>> = MutableLiveData()
-        fileService.fetchTypes()
+        dispose()
+        addDisposable(fileService.fetchTypes()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError {
                     Timber.e(it)}
                 .subscribe {
                     types.setValue(it)
-                }
+                })
         return types
     }
 }

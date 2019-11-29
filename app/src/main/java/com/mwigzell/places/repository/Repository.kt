@@ -1,8 +1,10 @@
 package com.mwigzell.places.repository
 
+import com.mwigzell.places.Mockable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
+@Mockable
 class Repository {
     val trash = CompositeDisposable()
 
@@ -10,7 +12,7 @@ class Repository {
         trash.add(disposable)
     }
 
-    fun clear() {
+    fun dispose() {
         trash.clear()
     }
 }

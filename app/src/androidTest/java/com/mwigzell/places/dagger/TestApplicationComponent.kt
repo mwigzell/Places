@@ -12,7 +12,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(
         modules = [
-            ViewModelModule::class,
+            MockViewModelModule::class,
             TestApplicationModule::class,
             ScreenBindingModule::class,
             AndroidSupportInjectionModule::class

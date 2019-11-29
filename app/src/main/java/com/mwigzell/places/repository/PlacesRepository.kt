@@ -14,10 +14,11 @@ import javax.inject.Singleton
 
 @Mockable
 @Singleton
-class PlacesRepository @Inject constructor(val networkService: NetworkService) {
+class PlacesRepository @Inject constructor(val networkService: NetworkService): Repository() {
     fun loadPlaces(location: String, radius:String, name: String): LiveData<List<Place>> {
         val places: MutableLiveData<List<Place>> = MutableLiveData()
-        networkService.getPlaces(location.toString(), MainViewModel.DEFAULT_RADIUS, name)
+        dispose()
+        addDisposable(networkService.getPlaces(location.toString(), MainViewModel.DEFAULT_RADIUS, name)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError {
@@ -27,7 +28,7 @@ class PlacesRepository @Inject constructor(val networkService: NetworkService) {
                 .subscribe {
                     Timber.d("<-- Got places status:" + it.status)
                     places.setValue(it.results)
-                }
+                })
         return places
     }
 }

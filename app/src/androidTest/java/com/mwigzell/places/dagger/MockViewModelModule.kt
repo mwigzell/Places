@@ -7,6 +7,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import org.mockito.Mockito
+import org.mockito.Mockito.mock
 import javax.inject.Provider
 
 @Module
@@ -15,12 +16,19 @@ class MockViewModelModule {
     @IntoMap
     @ViewModelKey(MainViewModel::class)
     fun getMainViewModel(): ViewModel {
-        return Mockito.mock(MainViewModel::class.java)
+        return mainViewModel
     }
+
+    //val viewModelFactory: ViewModelProvider.Factory = mock(ViewModelProvider.Factory::class.java)
 
     @Provides
     fun getViewModelFactory(map: Map<Class<out ViewModel>,
             @JvmSuppressWildcards Provider<ViewModel>>): ViewModelProvider.Factory {
         return ViewModelFactory(map)
+        //return viewModelFactory
+    }
+
+    companion object {
+        val mainViewModel = mock(MainViewModel::class.java)
     }
 }
