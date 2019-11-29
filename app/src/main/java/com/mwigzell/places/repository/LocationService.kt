@@ -20,7 +20,6 @@ import java.text.DecimalFormat
 import javax.inject.Inject
 import javax.inject.Singleton
 
-//TODO: pause and resume location updates according to life cycle and location permission
 //TODO: persist last known location
 
 @Singleton
@@ -86,6 +85,7 @@ constructor(private val context: Context
     }
 
     fun locationPause() {
+        Timber.d("locationPause")
         stopLocationUpdates()
     }
 

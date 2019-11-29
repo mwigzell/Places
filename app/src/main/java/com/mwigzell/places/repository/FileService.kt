@@ -1,4 +1,4 @@
-package com.mwigzell.places.data
+package com.mwigzell.places.repository
 
 import android.content.Context
 import com.mwigzell.places.model.Type

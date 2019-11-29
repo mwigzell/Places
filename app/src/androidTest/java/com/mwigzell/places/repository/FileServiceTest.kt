@@ -1,4 +1,4 @@
-package com.mwigzell.places.data
+package com.mwigzell.places.repository
 
 import android.content.SharedPreferences
 
