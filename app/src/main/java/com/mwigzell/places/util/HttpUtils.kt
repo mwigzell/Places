@@ -1,7 +1,7 @@
 package com.mwigzell.places.util
 
-import com.mwigzell.places.repository.network.ByteArrayPool
-import com.mwigzell.places.repository.network.PoolingByteArrayOutputStream
+import com.mwigzell.places.repository.api.network.ByteArrayPool
+import com.mwigzell.places.repository.api.network.PoolingByteArrayOutputStream
 
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -29,9 +29,9 @@ constructor() {
     @Throws(IOException::class)
     private fun getDataBytes(httpURLConnection: HttpURLConnection): ByteArray? {
         if (pool == null) {
-            pool = ByteArrayPool(DEFAULT_POOL_SIZE)
+            pool = com.mwigzell.places.repository.api.network.ByteArrayPool(DEFAULT_POOL_SIZE)
         }
-        val poolBytes = PoolingByteArrayOutputStream(pool, -1)
+        val poolBytes = com.mwigzell.places.repository.api.network.PoolingByteArrayOutputStream(pool, -1)
         var buffer: ByteArray? = null
         val bytes: ByteArray
         val `is` = httpURLConnection.inputStream
@@ -87,6 +87,6 @@ constructor() {
     companion object {
 
         private val DEFAULT_POOL_SIZE = 64 * 1024
-        internal var pool: ByteArrayPool? = null
+        internal var pool: com.mwigzell.places.repository.api.network.ByteArrayPool? = null
     }
 }

@@ -27,7 +27,7 @@ class HttpUtilsTest {
     @Test
     @Throws(Exception::class)
     fun testDumpUrlPlaces() {
-        val url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&types=food&name=harbour&key=AIzaSyDYvfBnjsQttjubdoLoyj5IBvf5_x86DtI"
+        val url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522,151.1957362&radius=500&types=food&name=harbour&key=" + PlacesApplication.GOOGLE_PLACES_API_KEY
         utils!!.dumpUrl(url)
         Thread.sleep(5000)
     }

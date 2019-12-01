@@ -1,39 +1,34 @@
 package com.mwigzell.places.repository.api.network
 
+import android.content.Context
+import androidx.test.platform.app.InstrumentationRegistry
+import com.mwigzell.places.TestApplication
 import com.mwigzell.places.TestUtil
+import com.mwigzell.places.repository.api.PlacesResponse
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
-import okhttp3.mockwebserver.QueueDispatcher
-import okhttp3.mockwebserver.RecordedRequest
 import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
+import timber.log.Timber
+import javax.inject.Inject
 
 class NetworkServiceTest {
-    val dispatcher: QueueDispatcher = object : QueueDispatcher() {
-
-        @Throws(InterruptedException::class)
-        override fun dispatch(request: RecordedRequest): MockResponse {
-
-            when (request.path) {
-                "/maps/api/place/nearbysearch/json" -> {
-                    val response = TestUtil().getStringFromResource("places.json")
-                    return MockResponse().setResponseCode(200).setBody(response)
-                }
-            }
-            return MockResponse().setResponseCode(404)
-        }
-    }
+    @Inject
+    lateinit var networkService: NetworkService
 
     lateinit private var webServer: MockWebServer
-    lateinit var networkService: NetworkService
+    lateinit private var context: Context
 
     @Before
     fun setUp() {
+        context = InstrumentationRegistry.getInstrumentation().targetContext
+        val app = context.applicationContext as TestApplication
+        app.getInjector().inject(this)
         webServer = MockWebServer()
         webServer.start(8080)
-        webServer.dispatcher = dispatcher
-        networkService = NetworkService(ServiceCreator())
     }
 
     @After
@@ -43,6 +38,25 @@ class NetworkServiceTest {
 
     @Test
     fun testGetPlaces() {
+        val response = TestUtil().getStringFromResource("places.json")
+        webServer.enqueue(MockResponse().setBody(response))
 
+        var placesResponse: PlacesResponse? = null
+        networkService.getPlaces(LOCATION, RADIUS, TYPE_NAME)
+                .subscribe (
+                {
+                    placesResponse = it
+                },{ e ->
+                    Timber.e(e)
+                })
+        assertNotNull(placesResponse)
+        assertEquals("OK", placesResponse!!.status)
+        assertNotNull(placesResponse!!.results)
+    }
+
+    companion object {
+        const val LOCATION = "123.0,456.0"
+        const val RADIUS = "500"
+        const val TYPE_NAME = "bakery"
     }
 }

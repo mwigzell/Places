@@ -9,15 +9,11 @@ import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import javax.inject.Inject
 
-//TODO: Fix mocking ViewModels
-//TODO: Redo UI so it works, use types as paging tabbed header, also as choice list
 //TODO: Introduce Jetpack Navigator
-//TODO: Architect the Repository abstraction behind ViewModels
-//TODO: Run memory analyzer
-//TODO: Add okhttp's MockWebServer
 //TODO: Get offline mode by using both Couchbase and ROOM variants
 //TODO: Replace Butterknife with RxBinding
 //TODO: Fix Proguard minify option
+//TODO: Add JaCoCo
 
 /**
  * Created by mwigzell on 12/10/16.

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.mwigzell.places.repository.network;
+package com.mwigzell.places.repository.api.network;
 
 import java.util.ArrayList;
 import java.util.Collections;

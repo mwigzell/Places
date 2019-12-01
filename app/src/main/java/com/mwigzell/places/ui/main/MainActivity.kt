@@ -1,4 +1,4 @@
-package com.mwigzell.places.ui
+package com.mwigzell.places.ui.main
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -69,7 +69,7 @@ class MainActivity : DaggerAppCompatActivity() {
                 .observe(this, Observer<Type> {
                     title = it.name
                     mDrawer.closeDrawers()
-                    mainViewModel.loadPlaces()
+                    //mainViewModel.loadPlaces()
                 })
 
     }

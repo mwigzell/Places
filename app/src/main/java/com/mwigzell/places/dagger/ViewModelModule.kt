@@ -1,8 +1,6 @@
 package com.mwigzell.places.dagger
 
-import com.mwigzell.places.ui.MainViewModel
-
-import javax.inject.Named
+import com.mwigzell.places.ui.main.MainViewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

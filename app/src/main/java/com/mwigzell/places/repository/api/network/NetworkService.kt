@@ -1,12 +1,14 @@
-package com.mwigzell.places.repository.network
+package com.mwigzell.places.repository.api.network
 
+import com.mwigzell.places.Mockable
 import com.mwigzell.places.PlacesApplication
-import com.mwigzell.places.model.PlacesResponse
+import com.mwigzell.places.repository.api.PlacesResponse
 import io.reactivex.Observable
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@Mockable
 @Singleton
 class NetworkService @Inject
 constructor(private val serviceCreator: ServiceCreator) {

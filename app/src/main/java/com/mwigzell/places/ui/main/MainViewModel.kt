@@ -1,16 +1,16 @@
-package com.mwigzell.places.ui
+package com.mwigzell.places.ui.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.mwigzell.places.Mockable
-import com.mwigzell.places.repository.LocationService
+import com.mwigzell.places.repository.api.LocationService
 import com.mwigzell.places.model.Place
 import com.mwigzell.places.model.PlaceLocation
 import com.mwigzell.places.model.Type
 import com.mwigzell.places.repository.PlacesRepository
 import com.mwigzell.places.repository.TypesRepository
+import com.mwigzell.places.ui.BaseViewModel
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -43,7 +43,7 @@ class MainViewModel @Inject constructor(
     fun getTypes(): LiveData<List<Type>> { return types }
     fun getSelectedType(): LiveData<Type> { return selectedType }
 
-    fun loadPlaces() {
+    private fun loadPlaces() {
         var name = DEFAULT_TYPE
         selectedType.value?.let { name = it.name }
         val placesLiveData = placesRepository.loadPlaces(location.toString(), DEFAULT_RADIUS, name)
@@ -51,6 +51,7 @@ class MainViewModel @Inject constructor(
         places.addSource(placesLiveData) {
             places.value = it
         }
+        placesSource = placesLiveData
     }
 
     fun onTypeSelected(type: Type) {

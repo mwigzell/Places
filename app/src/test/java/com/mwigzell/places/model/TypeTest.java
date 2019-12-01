@@ -1,4 +1,4 @@
-package com.mwigzell.places;
+package com.mwigzell.places.model;
 
 import com.mwigzell.places.model.Type;
 

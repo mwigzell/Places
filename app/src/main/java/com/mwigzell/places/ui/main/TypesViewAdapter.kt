@@ -1,4 +1,4 @@
-package com.mwigzell.places.ui
+package com.mwigzell.places.ui.main
 
 import androidx.recyclerview.widget.RecyclerView
 import android.util.SparseBooleanArray

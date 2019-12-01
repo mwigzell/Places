@@ -1,4 +1,4 @@
-package com.mwigzell.places.repository
+package com.mwigzell.places.repository.api
 
 import android.Manifest
 import android.content.Context
@@ -12,6 +12,7 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.LocationListener
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.mwigzell.places.Mockable
 import com.mwigzell.places.model.PlaceLocation
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
@@ -22,6 +23,7 @@ import javax.inject.Singleton
 
 //TODO: persist last known location
 
+@Mockable
 @Singleton
 class LocationService @Inject
 constructor(private val context: Context

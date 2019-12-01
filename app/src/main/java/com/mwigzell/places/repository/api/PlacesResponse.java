@@ -1,8 +1,9 @@
-package com.mwigzell.places.model;
+package com.mwigzell.places.repository.api;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.mwigzell.places.model.Place;
 
 /**
  * Created by mwigzell on 12/11/16.

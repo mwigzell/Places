@@ -1,4 +1,4 @@
-package com.mwigzell.places.ui
+package com.mwigzell.places.ui.main
 
 import android.content.Context
 import android.os.Bundle
@@ -15,6 +15,7 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.mwigzell.places.dagger.ViewModelFactory
 import com.mwigzell.places.model.Place
+import com.mwigzell.places.ui.BaseFragment
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -28,7 +29,7 @@ class PlacesFragment : BaseFragment() {
     @BindView(com.mwigzell.places.R.id.progressSpinner)
     lateinit internal var progressSpinner: ProgressBar
 
-    @BindView(com.mwigzell.places.R.id.myList)
+    @BindView(com.mwigzell.places.R.id.placeList)
     lateinit internal var recyclerView: RecyclerView
 
     @Inject

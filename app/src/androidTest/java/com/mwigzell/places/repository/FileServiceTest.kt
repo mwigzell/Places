@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.mwigzell.places.TestApplication
+import com.mwigzell.places.repository.api.FileService
 
 import org.junit.After
 import org.junit.Assert.assertTrue

@@ -1,10 +1,10 @@
-package com.mwigzell.places.repository
+package com.mwigzell.places.repository.api.network
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.mwigzell.places.any
 import com.mwigzell.places.model.Place
+import com.mwigzell.places.repository.PlacesRepository
 import com.mwigzell.places.repository.api.PlacesResponse
-import com.mwigzell.places.repository.api.network.NetworkService
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
@@ -39,7 +39,7 @@ class PlacesRepositoryTest {
         val places = ArrayList<Place>()
         places.add(place)
         val response = PlacesResponse()
-        response.status = "ok"
+        response.status = "OK"
         response.results = places
         val observable: BehaviorSubject<PlacesResponse> = BehaviorSubject.create()
         `when`(networkService.getPlaces(any(), any(), any())).thenReturn(observable)

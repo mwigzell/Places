@@ -2,8 +2,10 @@ package com.mwigzell.places.ui
 
 import android.Manifest
 import android.content.pm.PackageManager
-import com.mwigzell.places.repository.LocationService
+import com.mwigzell.places.repository.api.LocationService
 import dagger.android.support.DaggerFragment
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -15,6 +17,16 @@ abstract class BaseFragment : DaggerFragment() {
 
     @Inject
     lateinit internal var locationService: LocationService
+
+    val trash = CompositeDisposable()
+
+    fun addDisposable(disposable: Disposable) {
+        trash.add(disposable)
+    }
+
+    fun dispose() {
+        trash.clear()
+    }
 
     fun checkResumeLocation() {
         if (!locationService.hasLocationPermissions()) {

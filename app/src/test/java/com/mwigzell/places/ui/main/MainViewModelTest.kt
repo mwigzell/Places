@@ -1,15 +1,14 @@
-package com.mwigzell.places
+package com.mwigzell.places.ui.main
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
+import com.mwigzell.places.any
 import com.mwigzell.places.model.Place
 import com.mwigzell.places.model.PlaceLocation
 import com.mwigzell.places.model.Type
 import com.mwigzell.places.repository.PlacesRepository
 import com.mwigzell.places.repository.TypesRepository
 import com.mwigzell.places.repository.api.LocationService
-import com.mwigzell.places.ui.main.MainViewModel
 import io.reactivex.subjects.BehaviorSubject
 import org.junit.Assert.*
 import org.junit.Before

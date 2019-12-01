@@ -1,9 +1,9 @@
-package com.mwigzell.places.repository.network
+package com.mwigzell.places.repository.api.network
 
 
 import android.content.Context
 
-import com.mwigzell.places.model.PlacesResponse
+import com.mwigzell.places.repository.api.PlacesResponse
 import com.mwigzell.places.util.AndroidServices
 import com.mwigzell.places.util.FileUtils
 import io.reactivex.Observable
@@ -21,11 +21,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 import timber.log.Timber
+import javax.inject.Named
 
 class ServiceCreator @Inject
 constructor(private val context: Context,
             private val fileUtils: FileUtils,
-            private val androidServices: AndroidServices) {
+            private val androidServices: AndroidServices,
+            @Named("RetrofitBaseUrl") val API_BASE_URL: String) {
 
     private var cache: Cache? = null
 
@@ -139,7 +141,6 @@ constructor(private val context: Context,
     }
 
     companion object {
-        val API_BASE_URL = "https://maps.googleapis.com"
         var RETROFIT_CACHE = "RETROFIT_CACHE"
 
         private var httpClient: OkHttpClient.Builder? = null

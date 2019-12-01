@@ -2,11 +2,10 @@ package com.mwigzell.places.dagger
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.mwigzell.places.ui.MainViewModel
+import com.mwigzell.places.ui.main.MainViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
-import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import javax.inject.Provider
 

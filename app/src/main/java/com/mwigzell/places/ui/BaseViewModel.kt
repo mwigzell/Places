@@ -1,18 +1,20 @@
-package com.mwigzell.places.repository
+package com.mwigzell.places.ui
 
+import androidx.lifecycle.ViewModel
 import com.mwigzell.places.Mockable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 
 @Mockable
-class Repository {
+class BaseViewModel: ViewModel() {
     val trash = CompositeDisposable()
 
     fun addDisposable(disposable: Disposable) {
         trash.add(disposable)
     }
 
-    fun dispose() {
+    override fun onCleared() {
+        super.onCleared()
         trash.clear()
     }
 }
