@@ -14,7 +14,7 @@ import static junit.framework.Assert.assertTrue;
 public class TypeTest {
 
     @Test
-    public void create() {
+    public void testCreate() {
         String line = "a_name an_url";
         Type t = new Type(line);
 
@@ -23,7 +23,7 @@ public class TypeTest {
     }
 
     @Test
-    public void createIncomplete() {
+    public void testCreateIncomplete() {
         String line = "a_name";
         Type t = new Type(line);
         assertEquals("a_name", t.name);
@@ -31,7 +31,7 @@ public class TypeTest {
     }
 
     @Test
-    public void createEmpty() {
+    public void testCreateEmpty() {
         String line = "";
         Type t = new Type(line);
         assertEquals(null, t.name);

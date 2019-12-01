@@ -3,14 +3,19 @@ package com.mwigzell.places.ui
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.MenuItem
+import android.widget.FrameLayout
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.google.android.material.navigation.NavigationView
 import com.mwigzell.places.R
+import com.mwigzell.places.dagger.ViewModelFactory
+import com.mwigzell.places.model.Type
 import dagger.Module
 import dagger.android.AndroidInjection
 import dagger.android.ContributesAndroidInjector
@@ -35,6 +40,13 @@ class MainActivity : DaggerAppCompatActivity() {
     @BindView(R.id.nvView)
     lateinit internal var nvDrawer: NavigationView
 
+    @BindView(R.id.typesContent)
+    lateinit internal var types: FrameLayout
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private lateinit var mainViewModel: MainViewModel
     private var drawerToggle: ActionBarDrawerToggle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,11 +56,22 @@ class MainActivity : DaggerAppCompatActivity() {
         setContentView(R.layout.activity_main)
         ButterKnife.bind(this)
         setSupportActionBar(toolbar)
-        setupDrawerContent(nvDrawer)
+
         drawerToggle = setupDrawerToggle()
         // Tie DrawerLayout events to the ActionBarToggle
         mDrawer.addDrawerListener(drawerToggle!!)
-        selectDrawerItem(nvDrawer.menu.getItem(0))
+
+        setTypesFragment()
+        moveToPlaces()
+
+        mainViewModel = ViewModelProviders.of(this, viewModelFactory)[MainViewModel::class.java]
+        mainViewModel.getSelectedType()
+                .observe(this, Observer<Type> {
+                    title = it.name
+                    mDrawer.closeDrawers()
+                    mainViewModel.loadPlaces()
+                })
+
     }
 
     // `onPostCreate` called when activity start-up is complete after `onStart()`
@@ -73,11 +96,12 @@ class MainActivity : DaggerAppCompatActivity() {
         return ActionBarDrawerToggle(this, mDrawer, toolbar, R.string.drawer_open, R.string.drawer_close)
     }
 
-    private fun setupDrawerContent(navigationView: NavigationView) {
-        navigationView.setNavigationItemSelectedListener { menuItem ->
-            selectDrawerItem(menuItem)
-            true
-        }
+    private fun setTypesFragment() {
+        var typesFragment = TypesFragment()
+        val fragmentManager = supportFragmentManager
+        fragmentManager.beginTransaction()
+            .replace(R.id.typesContent, typesFragment, "typesFragment")
+            .commit()
     }
 
     private fun replaceFragment(fragmentClass: Class<*>) {
@@ -94,25 +118,6 @@ class MainActivity : DaggerAppCompatActivity() {
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit()
     }
 
-    private fun selectDrawerItem(menuItem: MenuItem) {
-        val fragmentClass: Class<*>
-        when (menuItem.itemId) {
-            R.id.nav_first_fragment -> fragmentClass = PlacesFragment::class.java
-            R.id.nav_second_fragment -> fragmentClass = TypesFragment::class.java
-            R.id.nav_third_fragment -> fragmentClass = PlacesFragment::class.java
-            else -> fragmentClass = PlacesFragment::class.java
-        }
-
-        replaceFragment(fragmentClass)
-
-        // Highlight the selected item has been done by NavigationView
-        menuItem.isChecked = true
-        // Set action bar title
-        title = menuItem.title
-        // Close the navigation drawer
-        mDrawer.closeDrawers()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (drawerToggle!!.onOptionsItemSelected(item)) {
             true
@@ -122,9 +127,5 @@ class MainActivity : DaggerAppCompatActivity() {
 
     fun moveToPlaces() {
         replaceFragment(PlacesFragment::class.java)
-    }
-
-    fun moveToTypes() {
-        replaceFragment(TypesFragment::class.java)
     }
 }

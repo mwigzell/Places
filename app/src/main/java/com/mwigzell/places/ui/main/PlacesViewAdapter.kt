@@ -52,7 +52,7 @@ class PlacesViewAdapter @Inject internal constructor() : RecyclerView.Adapter<Pl
                 .with(imageView.context)
                 .load(restaurantpic)
                 .centerCrop()
-                //.placeholder(R.mipmap.ic_launcher)
+                .placeholder(R.mipmap.ic_launcher)
                 .crossFade()
                 .into(imageView)
     }

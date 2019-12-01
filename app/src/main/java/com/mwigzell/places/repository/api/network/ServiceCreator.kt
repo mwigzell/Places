@@ -101,7 +101,7 @@ constructor(private val context: Context,
     }
 
     private fun isChachableRequest(chain: Interceptor.Chain): Boolean {
-        return chain.request().url().url().toString().contains("&parm=value")
+        return chain.request().url.toString().contains("&parm=value")
     }
 
     private fun createCacheForOkHTTP(): Cache {

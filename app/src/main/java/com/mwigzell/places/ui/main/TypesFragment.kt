@@ -76,10 +76,9 @@ class TypesFragment : BaseFragment() {
             adapter.setItems(it)
         })
 
-        adapter.clickEvent.subscribe {
+        addDisposable(adapter.clickEvent.subscribe {
             Timber.d("clicked on $it")
             mainViewModel.onTypeSelected(it)
-            (activity as MainActivity).moveToPlaces()
-        }
+        })
     }
 }
