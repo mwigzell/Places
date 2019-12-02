@@ -7,6 +7,7 @@ import com.mwigzell.places.model.Place
 import com.mwigzell.places.model.PlaceLocation
 import com.mwigzell.places.model.Type
 import com.mwigzell.places.repository.PlacesRepository
+import com.mwigzell.places.repository.PlacesRequest
 import com.mwigzell.places.repository.TypesRepository
 import com.mwigzell.places.repository.api.LocationService
 import io.reactivex.subjects.BehaviorSubject
@@ -46,7 +47,7 @@ class MainViewModelTest {
                 .thenReturn(placeLocation)
         `when`(locationService.observeLocationChanges())
                 .thenReturn(location)
-        `when`(placesRepository.loadPlaces(any(), any(), any())).thenReturn(placesLiveData)
+        `when`(placesRepository.loadPlaces(any())).thenReturn(placesLiveData)
         `when`(typesRepository.loadTypes()).thenReturn(typesLiveData)
         viewModel = MainViewModel(
                 typesRepository,
@@ -57,7 +58,8 @@ class MainViewModelTest {
     @Test
     fun testConstruction() {
         verify(placesRepository)
-                .loadPlaces(LATLONG, MainViewModel.DEFAULT_RADIUS, MainViewModel.DEFAULT_TYPE)
+                .loadPlaces(PlacesRequest(
+                        LATLONG, MainViewModel.DEFAULT_RADIUS, MainViewModel.DEFAULT_TYPE))
     }
 
     private fun postPlaces() {
@@ -77,7 +79,8 @@ class MainViewModelTest {
         postPlaces()
 
         verify(placesRepository)
-                .loadPlaces(LATLONG2, MainViewModel.DEFAULT_RADIUS, TYPE_NAME)
+                .loadPlaces(PlacesRequest(
+                        LATLONG2, MainViewModel.DEFAULT_RADIUS, TYPE_NAME))
     }
 
     @Test

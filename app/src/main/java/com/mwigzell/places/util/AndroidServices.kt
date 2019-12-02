@@ -3,6 +3,7 @@ package com.mwigzell.places.util
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import com.mwigzell.places.repository.api.network.NetworkStatus
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,11 +15,11 @@ import javax.inject.Singleton
  */
 @Singleton
 class AndroidServices @Inject
-constructor(private val context: Context) {
+constructor(private val context: Context): NetworkStatus {
     val connectivityManager: ConnectivityManager
         get() = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-    val isNetwork: Boolean
+    override val isNetwork: Boolean
         get() {
             val connectivityManager = connectivityManager
             val networkInfo = connectivityManager.activeNetworkInfo

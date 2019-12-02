@@ -9,6 +9,7 @@ import com.mwigzell.places.model.Place
 import com.mwigzell.places.model.PlaceLocation
 import com.mwigzell.places.model.Type
 import com.mwigzell.places.repository.PlacesRepository
+import com.mwigzell.places.repository.PlacesRequest
 import com.mwigzell.places.repository.TypesRepository
 import com.mwigzell.places.ui.BaseViewModel
 import timber.log.Timber
@@ -46,7 +47,8 @@ class MainViewModel @Inject constructor(
     private fun loadPlaces() {
         var name = DEFAULT_TYPE
         selectedType.value?.let { name = it.name }
-        val placesLiveData = placesRepository.loadPlaces(location.toString(), DEFAULT_RADIUS, name)
+        val placesLiveData = placesRepository.loadPlaces(
+                PlacesRequest(location.toString(), DEFAULT_RADIUS, name))
         placesSource?.let { places.removeSource(it)}
         places.addSource(placesLiveData) {
             places.value = it

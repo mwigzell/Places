@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.test.platform.app.InstrumentationRegistry
 import com.mwigzell.places.TestApplication
 import com.mwigzell.places.TestUtil
+import com.mwigzell.places.repository.PlacesRequest
 import com.mwigzell.places.repository.api.PlacesResponse
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -42,7 +43,7 @@ class NetworkServiceTest {
         webServer.enqueue(MockResponse().setBody(response))
 
         var placesResponse: PlacesResponse? = null
-        networkService.getPlaces(LOCATION, RADIUS, TYPE_NAME)
+        networkService.getPlaces(PlacesRequest(LOCATION, RADIUS, TYPE_NAME))
                 .subscribe (
                 {
                     placesResponse = it

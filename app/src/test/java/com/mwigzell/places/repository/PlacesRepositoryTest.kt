@@ -1,10 +1,13 @@
-package com.mwigzell.places.repository.api.network
+package com.mwigzell.places.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.mwigzell.places.any
+import com.mwigzell.places.capture
 import com.mwigzell.places.model.Place
-import com.mwigzell.places.repository.PlacesRepository
 import com.mwigzell.places.repository.api.PlacesResponse
+import com.mwigzell.places.repository.api.network.NetworkService
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
@@ -13,8 +16,11 @@ import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 
 class PlacesRepositoryTest {
@@ -26,10 +32,16 @@ class PlacesRepositoryTest {
     @Mock
     lateinit var networkService: NetworkService
 
+    @Mock
+    lateinit var placesDao: PlacesDao
+
+    @Captor
+    lateinit var placesCaptor: ArgumentCaptor<List<Place>>
+
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        repo = PlacesRepository(networkService)
+        repo = PlacesRepository(networkService, placesDao)
     }
 
     @Test
@@ -42,11 +54,18 @@ class PlacesRepositoryTest {
         response.status = "OK"
         response.results = places
         val observable: BehaviorSubject<PlacesResponse> = BehaviorSubject.create()
-        `when`(networkService.getPlaces(any(), any(), any())).thenReturn(observable)
+        `when`(networkService.getPlaces(any())).thenReturn(observable)
 
-        val placesLd = repo.loadPlaces(LOCATION, RADIUS, TYPE_NAME)
-        placesLd.observeForever() {}
+        `when`(placesDao.hasData(any())).thenReturn(false)
+        val placesIn: MutableLiveData<List<Place>> = MutableLiveData()
+        `when`(placesDao.get(any())).thenReturn(placesIn)
+        val placesLd = repo.loadPlaces(PlacesRequest(LOCATION, RADIUS, TYPE_NAME))
         observable.onNext(response)
+        placesLd.observeForever() {}
+
+        verify(placesDao).insert(any(), capture(placesCaptor))
+        val placesList: List<Place> = placesCaptor.value
+        placesIn.value = placesList
 
         assertEquals(PLACE_NAME, placesLd.value!!.get(0)!!.name)
     }

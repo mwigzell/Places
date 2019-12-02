@@ -2,6 +2,7 @@ package com.mwigzell.places.repository.api.network
 
 import com.mwigzell.places.Mockable
 import com.mwigzell.places.PlacesApplication
+import com.mwigzell.places.repository.PlacesRequest
 import com.mwigzell.places.repository.api.PlacesResponse
 import io.reactivex.Observable
 import timber.log.Timber
@@ -20,12 +21,10 @@ constructor(private val serviceCreator: ServiceCreator) {
     }
 
     @JvmOverloads
-    fun getPlaces(location: String = "-33.8670522,151.1957362",
-                  radius: String = "500",
-                  type: String = "food&name=harbour"): Observable<PlacesResponse> {
-        Timber.d("--> Get places loc=$location radius=$radius type=$type")
+    fun getPlaces(request: PlacesRequest): Observable<PlacesResponse> {
+        Timber.d("--> Get places $request")
 
-        return client.getPlaces(location, radius, type, PlacesApplication.GOOGLE_PLACES_API_KEY)
+        return client.getPlaces(request.location, request.radius, request.type, PlacesApplication.GOOGLE_PLACES_API_KEY)
     }
 
     fun clearCache() {

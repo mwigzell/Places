@@ -19,18 +19,13 @@ android {
         testInstrumentationRunner "com.mwigzell.places.CustomTestRunner"
         vectorDrawables.useSupportLibrary = true
     }
-    flavorDimensions "version"
+    flavorDimensions "dao"
     productFlavors {
-        dev {
-            dimension "version"
-            // Enable pre-dexing to produce an APK that can be tested on
-            // Android 5.0+ without the time-consuming DEX build processes.
-            minSdkVersion 23
+        room {
+            dimension "dao"
         }
-        prod {
-            dimension "version"
-            // The actual minSdkVersion for the production version.
-            minSdkVersion 23
+        cbs {
+            dimension "dao"
         }
     }
     if(project.hasProperty("Places.properties")

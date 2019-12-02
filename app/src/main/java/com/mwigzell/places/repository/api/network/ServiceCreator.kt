@@ -4,7 +4,6 @@ package com.mwigzell.places.repository.api.network
 import android.content.Context
 
 import com.mwigzell.places.repository.api.PlacesResponse
-import com.mwigzell.places.util.AndroidServices
 import com.mwigzell.places.util.FileUtils
 import io.reactivex.Observable
 import java.io.File
@@ -26,7 +25,7 @@ import javax.inject.Named
 class ServiceCreator @Inject
 constructor(private val context: Context,
             private val fileUtils: FileUtils,
-            private val androidServices: AndroidServices,
+            private val networkStatus: NetworkStatus,
             @Named("RetrofitBaseUrl") val API_BASE_URL: String) {
 
     private var cache: Cache? = null
@@ -89,7 +88,7 @@ constructor(private val context: Context,
         override fun intercept(chain: Interceptor.Chain): Response {
             var request = chain.request()
 
-            if (!androidServices.isNetwork && isChachableRequest(chain)) {
+            if (!networkStatus.isNetwork && isChachableRequest(chain)) {
                 Timber.d("Rewriting request")
 
                 val maxStale = 60 * 60 * 24 * 28 // tolerate 4-weeks stale
