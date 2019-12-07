@@ -14,6 +14,7 @@ import javax.inject.Inject
 //TODO: Replace Butterknife with RxBinding
 //TODO: Fix Proguard minify option
 //TODO: Add JaCoCo
+//TODO: Play with animation points in the rendering of view switching
 
 /**
  * Created by mwigzell on 12/10/16.

@@ -3,7 +3,6 @@ package com.mwigzell.places.dagger
 import android.content.Context
 import com.mwigzell.places.TestApplication
 import com.mwigzell.places.repository.FileServiceTest
-import com.mwigzell.places.repository.api.network.NetworkServiceTest
 import com.mwigzell.places.ui.MainActivityTest
 import dagger.BindsInstance
 import dagger.Component
@@ -23,7 +22,6 @@ interface TestApplicationComponent : AppComponent {
     fun inject(test: TestApplication)
     fun inject(test: FileServiceTest)
     fun inject(test: MainActivityTest)
-    fun inject(test: NetworkServiceTest)
 
     @Component.Factory
     interface Factory {

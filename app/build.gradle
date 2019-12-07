@@ -27,6 +27,9 @@ android {
         cbs {
             dimension "dao"
         }
+        nodb {
+            dimension "dao"
+        }
     }
     if(project.hasProperty("Places.properties")
             && new File(project.property("Places.properties")).exists()) {
@@ -95,6 +98,11 @@ dependencies {
     kapt "com.jakewharton:butterknife-compiler:$BUTTERKNIFE_VERSION"
     implementation "com.jakewharton:butterknife:$BUTTERKNIFE_VERSION"
     implementation "com.github.bumptech.glide:glide:$GLIDE_VERSION"
+    implementation "androidx.room:room-runtime:$ROOM_VERSION"
+    kapt "androidx.room:room-compiler:$ROOM_VERSION"
+    implementation "androidx.room:room-ktx:$ROOM_VERSION"
+    implementation "androidx.room:room-rxjava2:$ROOM_VERSION"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$LIFECYCLE_VERSION"
 
     // androidTest
     kaptAndroidTest "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
@@ -111,6 +119,11 @@ dependencies {
     androidTestImplementation "com.squareup.okhttp3:mockwebserver:$MOCKWEBSERVER_VERSION"
     androidTestImplementation "org.mockito:mockito-core:$MOCKITO_VERSION"
     androidTestImplementation "org.mockito:mockito-android:$MOCKITO_VERSION"
+    // inclusion of following with exclude allows androidTest to work BUT
+    // can't run single tests in studio as a result.
+    androidTestImplementation ("androidx.arch.core:core-testing:$CORE_TESTING_VERSION", {
+        exclude group: 'org.mockito', module: 'mockito-core'
+    })
 
     // test
     testImplementation 'junit:junit:4.12'
@@ -118,6 +131,7 @@ dependencies {
     kaptTest "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
     testImplementation "androidx.arch.core:core-testing:$CORE_TESTING_VERSION"
     testImplementation "com.squareup.okhttp3:mockwebserver:$MOCKWEBSERVER_VERSION"
+    testImplementation "androidx.room:room-testing:$ROOM_VERSION"
 }
 
 apply plugin: 'kotlin-allopen'

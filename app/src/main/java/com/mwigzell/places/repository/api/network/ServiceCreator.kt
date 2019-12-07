@@ -1,8 +1,6 @@
 package com.mwigzell.places.repository.api.network
 
 
-import android.content.Context
-
 import com.mwigzell.places.repository.api.PlacesResponse
 import com.mwigzell.places.util.FileUtils
 import io.reactivex.Observable
@@ -23,10 +21,10 @@ import timber.log.Timber
 import javax.inject.Named
 
 class ServiceCreator @Inject
-constructor(private val context: Context,
-            private val fileUtils: FileUtils,
+constructor(@Named("RetrofitCacheDir") val cacheDir: File,
+            val fileUtils: FileUtils,
             private val networkStatus: NetworkStatus,
-            @Named("RetrofitBaseUrl") val API_BASE_URL: String) {
+            @Named("RetrofitBaseUrl") val RETROFIT_BASE_URL: String) {
 
     private var cache: Cache? = null
 
@@ -34,14 +32,12 @@ constructor(private val context: Context,
         cache = null
 
         builder = Retrofit.Builder()
-                .baseUrl(API_BASE_URL).addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(RETROFIT_BASE_URL).addConverterFactory(GsonConverterFactory.create())
         httpClient = OkHttpClient.Builder()
         httpClient!!.readTimeout(60, TimeUnit.SECONDS)
         httpClient!!.connectTimeout(60, TimeUnit.SECONDS)
-        //httpClient.addInterceptor(new AuthIntercepter(context));
         httpClient!!.addNetworkInterceptor(REWRITE_RESPONSE_INTERCEPTOR())
-        httpClient!!.addInterceptor(OFFLINE_INTERCEPTOR(context))
-        //httpClient.authenticator(new TokenAuthenticator(context));
+        httpClient!!.addInterceptor(OFFLINE_INTERCEPTOR())
         cache = createCacheForOkHTTP()
         httpClient!!.cache(cache)
         builder!!.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -51,12 +47,11 @@ constructor(private val context: Context,
 
     fun <S> createServiceForRefresh(serviceClass: Class<S>): S {
         builder = Retrofit.Builder()
-                .baseUrl(API_BASE_URL).addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(RETROFIT_BASE_URL).addConverterFactory(GsonConverterFactory.create())
         httpClient = OkHttpClient().newBuilder()
 
         httpClient!!.readTimeout(60, TimeUnit.SECONDS)
         httpClient!!.connectTimeout(60, TimeUnit.SECONDS)
-        //httpClient.addInterceptor(new AuthIntercepter(context));
         builder!!.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
         val retrofit = builder!!.client(httpClient!!.build()).build()
         return retrofit.create(serviceClass)
@@ -83,7 +78,7 @@ constructor(private val context: Context,
                 cacheControl.contains("must-revalidate") || cacheControl.contains("max-age=0")
     }
 
-    private inner class OFFLINE_INTERCEPTOR(internal var mContext: Context) : Interceptor {
+    private inner class OFFLINE_INTERCEPTOR() : Interceptor {
         @Throws(IOException::class)
         override fun intercept(chain: Interceptor.Chain): Response {
             var request = chain.request()
@@ -106,13 +101,13 @@ constructor(private val context: Context,
     }
 
     private fun createCacheForOkHTTP(): Cache {
-        return Cache(getDirectory(context), (1024 * 1024 * 10).toLong())
+        return Cache(getDirectory(), (1024 * 1024 * 10).toLong())
     }
 
     fun clearCacheForOkHTTP() {
         cache?.let {
             try {
-                fileUtils.removeDir(File(context.externalCacheDir, RETROFIT_CACHE))
+                fileUtils.removeDir(getDirectory())
                 it.delete()
             } catch (e: IOException) {
                 Timber.e(e, "%s - Exception with message: %s", RETROFIT_CACHE, e.message)
@@ -126,8 +121,8 @@ constructor(private val context: Context,
     }
 
     // returns the file to store cached details
-    private fun getDirectory(context: Context): File {
-        return File(context.externalCacheDir, RETROFIT_CACHE)
+    private fun getDirectory(): File {
+        return File(cacheDir, RETROFIT_CACHE)
     }
 
     interface PlacesClient {

@@ -1,14 +1,16 @@
 package com.mwigzell.places.repository
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.mwigzell.places.LiveDataTestUtil
 import com.mwigzell.places.any
 import com.mwigzell.places.capture
 import com.mwigzell.places.model.Place
 import com.mwigzell.places.repository.api.PlacesResponse
 import com.mwigzell.places.repository.api.network.NetworkService
+import com.mwigzell.places.repository.dao.IPlaceDaoGeneric
 import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import org.junit.Assert.assertEquals
@@ -33,7 +35,7 @@ class PlacesRepositoryTest {
     lateinit var networkService: NetworkService
 
     @Mock
-    lateinit var placesDao: PlacesDao
+    lateinit var IPlaceDaoGeneric: IPlaceDaoGeneric
 
     @Captor
     lateinit var placesCaptor: ArgumentCaptor<List<Place>>
@@ -41,7 +43,7 @@ class PlacesRepositoryTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        repo = PlacesRepository(networkService, placesDao)
+        repo = PlacesRepository(networkService, IPlaceDaoGeneric)
     }
 
     @Test
@@ -56,18 +58,19 @@ class PlacesRepositoryTest {
         val observable: BehaviorSubject<PlacesResponse> = BehaviorSubject.create()
         `when`(networkService.getPlaces(any())).thenReturn(observable)
 
-        `when`(placesDao.hasData(any())).thenReturn(false)
+        `when`(IPlaceDaoGeneric.hasPlaces(any())).thenReturn(false)
         val placesIn: MutableLiveData<List<Place>> = MutableLiveData()
-        `when`(placesDao.get(any())).thenReturn(placesIn)
+        `when`(IPlaceDaoGeneric.get(any())).thenReturn(placesIn)
         val placesLd = repo.loadPlaces(PlacesRequest(LOCATION, RADIUS, TYPE_NAME))
         observable.onNext(response)
-        placesLd.observeForever() {}
 
-        verify(placesDao).insert(any(), capture(placesCaptor))
+        verify(IPlaceDaoGeneric).insert(any(), capture(placesCaptor))
         val placesList: List<Place> = placesCaptor.value
         placesIn.value = placesList
 
-        assertEquals(PLACE_NAME, placesLd.value!!.get(0)!!.name)
+        val result =  LiveDataTestUtil.getValue(placesLd)
+
+        assertEquals(PLACE_NAME, result.get(0)!!.name)
     }
 
     companion object {
@@ -75,6 +78,7 @@ class PlacesRepositoryTest {
         @JvmStatic
         fun setupClass() {
             RxAndroidPlugins.setInitMainThreadSchedulerHandler { _ -> Schedulers.trampoline() }
+            RxJavaPlugins.setIoSchedulerHandler { _ -> Schedulers.trampoline() }
         }
 
         const val LOCATION = "123.0,456.0"

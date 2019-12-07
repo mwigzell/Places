@@ -1,12 +1,15 @@
 package com.mwigzell.places.dagger
 
 import android.content.Context
-import com.mwigzell.places.repository.PlacesDao
-import com.mwigzell.places.repository.api.dao.PlacesDaoImpl
+import com.mwigzell.places.repository.dao.IPlaceDaoGeneric
+import com.mwigzell.places.repository.dao.PlaceDaoGeneric
 import com.mwigzell.places.repository.api.network.NetworkStatus
+import com.mwigzell.places.repository.api.network.ServiceCreator
 import com.mwigzell.places.util.AndroidServices
+import com.mwigzell.places.util.FileUtils
 import dagger.Module
 import dagger.Provides
+import java.io.File
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -24,9 +27,19 @@ class AppModule() {
 
     @Provides
     @Named("RetrofitBaseUrl")
-    fun getRetrofitBaseUrl(): String = "https://maps.googleapis.com"
+    fun getRetrofitBaseUrl(): String = RETROFIT_BASE_URL
 
     @Provides
     @Singleton
-    fun providePlacesDao(placesDao: PlacesDaoImpl): PlacesDao = placesDao
+    fun providePlacesDao(placeDao: PlaceDaoGeneric): IPlaceDaoGeneric = placeDao
+
+    @Provides
+    @Named("RetrofitCacheDir")
+    fun getRetrofitCacheDir(context: Context): File {
+        return context.externalCacheDir
+    }
+
+    companion object {
+        const val RETROFIT_BASE_URL = "https://maps.googleapis.com"
+    }
 }
