@@ -35,7 +35,7 @@ class HttpUtilsTest {
     @Test
     @Throws(Exception::class)
     fun testDumpUrlPhoto() {
-        val photoreference = "CoQBdwAAAJdyDOJlHLNbIjDXu_KjUMXYYs9SUP-qc-380i2wvbhQs3i4DTzHU_RFordaa-4FzaTlc-gh0mD9WpyNUB6b2hN6BsCpgq1AZf_C9uZZ08IrorEgJpjmzvDWYZUQ61Y3-V5_LU3wCIb_CzKvfaZxtt7rwX6xmrliGtAkftiulPNDEhDg0FldXTL5cWqq_h36DTYXGhR6EXckzVwRqU3_vfoWem4cmZ5_Jg"
+        val photoreference = "CmRaAAAA8vEs39GnPpLhvMBgkVfuvSDwwN4q829I2ypi9aJjoOkzlKGmVbpYnU7ng5Bm1Js3cPVzGpPrOQZC_Chx__Gv5nk0FFbKyCamVbxgemml1X0JnX44f68b0Oiu76OUmb-uEhAWujEbnLMH7aUkrqmxsnSzGhRYAbXUs1z8nPctAoEKQgtQGm_7dQ"
         val restaurantpic = "https://maps.googleapis.com/maps/api/place/photo?" +
                 "maxwidth=400" +
                 "&photoreference=" + photoreference +

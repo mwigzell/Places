@@ -37,16 +37,16 @@ class PlacesViewAdapter @Inject internal constructor() : RecyclerView.Adapter<Pl
     }
 
     private fun getPhoto(place: Place, imageView: ImageView) {
-        if (place.photos == null || place.photos.size == 0)
+        if (place.photos == null || place.photos.size == 0) {
+            Glide.clear(imageView)
             return
+        }
         val photo = place.photos[0]
         val photoreference = photo.photoReference
         val restaurantpic = "https://maps.googleapis.com/maps/api/place/photo?" +
                 "maxwidth=400" +
                 "&photoreference=" + photoreference +
                 "&key=" + PlacesApplication.GOOGLE_PLACES_API_KEY
-
-        //Timber.d("Loading restaurantpic=" + restaurantpic);
 
         Glide
                 .with(imageView.context)

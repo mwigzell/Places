@@ -72,7 +72,7 @@ class PlacesRepository @Inject constructor(
                 .subscribe(
                         {d -> Timber.d("done: d: $d")},
                         {e -> Timber.e(e)},
-                        {Timber.d("Completed insertPlaces()")}
+                        {Timber.d("Completed loadPlaces()")}
                 )
         addDisposable(disposable)
 

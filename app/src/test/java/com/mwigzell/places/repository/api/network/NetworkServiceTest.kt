@@ -1,7 +1,6 @@
 package com.mwigzell.places.repository.api.network
 
 import TestFileUtil
-import com.mwigzell.places.dagger.AppModule
 import com.mwigzell.places.repository.PlacesRequest
 import com.mwigzell.places.repository.api.PlacesResponse
 import com.mwigzell.places.util.FileUtils

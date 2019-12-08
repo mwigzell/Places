@@ -103,6 +103,7 @@ dependencies {
     implementation "androidx.room:room-ktx:$ROOM_VERSION"
     implementation "androidx.room:room-rxjava2:$ROOM_VERSION"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$LIFECYCLE_VERSION"
+    implementation "androidx.lifecycle:lifecycle-livedata:$LIFECYCLE_VERSION"
 
     // androidTest
     kaptAndroidTest "com.google.dagger:dagger-compiler:$DAGGER_VERSION"

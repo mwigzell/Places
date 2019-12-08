@@ -4,28 +4,30 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import com.mwigzell.places.model.Place
 import com.mwigzell.places.observeOnce
-import org.hamcrest.CoreMatchers.equalTo
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.io.IOException
 
-class PlaceDaoTest {
+class PlaceDaoGenericTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private lateinit var placeDao: PlaceDao
     private lateinit var db: PlacesDatabase
+    private lateinit var placeDaoGeneric: PlaceDaoGeneric
 
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, PlacesDatabase::class.java).build()
         placeDao = db.getPlaceDao()
+        placeDaoGeneric = PlaceDaoGeneric(db)
     }
 
     @After
@@ -34,46 +36,45 @@ class PlaceDaoTest {
         db.close()
     }
 
-    fun insertData(type: String = PlaceDaoTest.TYPE): List<PlaceDto> {
+    fun buildList(type: String = PlaceDaoTest.TYPE): List<PlaceDto> {
         val list = ArrayList<PlaceDto>()
         list.add(PlaceTestUtil.create("george", "a photo ref", type))
         list.add(PlaceTestUtil.create("harry", "a photo ref2", type))
+        return list
+    }
+
+    fun insertData(type: String = PlaceDaoTest.TYPE): List<PlaceDto> {
+        val list = buildList(type)
         placeDao.insert(list)
         return list
     }
 
     @Test
-    @Throws(Exception::class)
-    fun writeUserAndReadInList() {
-        val list = insertData()
-        insertData(TYPE2)
+    fun testHasPlaces() {
+        insertData()
 
-        assertEquals(2, placeDao.hasPlaces(LATLONG, RADIUS, TYPE))
-
-        val placesLiveData = placeDao.get(LATLONG, RADIUS, TYPE)
-        var places: List<PlaceDto>? = null
-        placesLiveData.observeOnce {places = it }
-
-        assertEquals(2, places!!.size)
-        assertThat(places!!.get(0), equalTo(list.get(0)))
-        assertThat(places!!.get(1), equalTo(list.get(1)))
+        assertTrue(placeDaoGeneric.hasPlaces(PlaceTestUtil.defaultRequest()))
     }
 
     @Test
-    fun deleteRow() {
+    fun testGet() {
         insertData()
-        insertData(TYPE2)
 
-        val count = placeDao.delete(LATLONG, RADIUS, TYPE)
+        val liveData = placeDaoGeneric.get(PlaceTestUtil.defaultRequest())
 
-        assertEquals(2, count)
-        assertEquals(2, placeDao.hasPlaces(LATLONG, RADIUS, TYPE2))
+        liveData.observeOnce { assertEquals(2, it.size) }
+
+        assertEquals("george", liveData.value!!.get(0).name)
+        assertEquals("harry", liveData.value!!.get(1).name)
     }
 
-    companion object {
-        const val LATLONG = PlaceTestUtil.LATLONG
-        const val RADIUS = PlaceTestUtil.RADIUS
-        const val TYPE = PlaceTestUtil.TYPE
-        const val TYPE2 = PlaceTestUtil.TYPE2
+    @Test
+    fun testInsert() {
+        val list = ArrayList<Place>()
+        buildList().forEach { list.add(it.toPlace())}
+
+        placeDaoGeneric.insert(PlaceTestUtil.defaultRequest(), list)
+
+        assertTrue(placeDaoGeneric.hasPlaces(PlaceTestUtil.defaultRequest()))
     }
 }

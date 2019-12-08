@@ -1,10 +1,12 @@
 package com.mwigzell.places.dagger
 
 import android.content.Context
+import androidx.room.Room
 import com.mwigzell.places.repository.dao.IPlaceDaoGeneric
 import com.mwigzell.places.repository.dao.PlaceDaoGeneric
 import com.mwigzell.places.repository.api.network.NetworkStatus
 import com.mwigzell.places.repository.api.network.ServiceCreator
+import com.mwigzell.places.repository.dao.PlacesDatabase
 import com.mwigzell.places.util.AndroidServices
 import com.mwigzell.places.util.FileUtils
 import dagger.Module
@@ -37,6 +39,12 @@ class AppModule() {
     @Named("RetrofitCacheDir")
     fun getRetrofitCacheDir(context: Context): File {
         return context.externalCacheDir
+    }
+
+    @Provides
+    @Singleton
+    fun getPlacesDatabase(context: Context): PlacesDatabase {
+        return Room.databaseBuilder(context, PlacesDatabase::class.java, "PlacesDatabase").build()
     }
 
     companion object {
