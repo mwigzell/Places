@@ -21,8 +21,6 @@ import java.text.DecimalFormat
 import javax.inject.Inject
 import javax.inject.Singleton
 
-//TODO: persist last known location
-
 @Mockable
 @Singleton
 class LocationService @Inject
@@ -31,38 +29,30 @@ constructor(private val context: Context
 
     private val dm = DecimalFormat("0.0")
 
-    private var mLocationClient: GoogleApiClient? = null
-    private var mLocationRequest: LocationRequest? = null
-    private var mLastLocation: Location? = null
+    private var locationClient: GoogleApiClient? = null
+    private var locationRequest: LocationRequest? = null
+    private var lastLocation: Location? = null
     lateinit private var locationSubject: BehaviorSubject<PlaceLocation>
 
     init {
-        initService()
-    }
-
-    private fun initService() {
         //PlaceLocation client is needed to get at least one location
-        if (mLocationClient == null) {
-            mLocationClient = GoogleApiClient.Builder(context)
+        if (locationClient == null) {
+            locationClient = GoogleApiClient.Builder(context)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(LocationServices.API)
                     .build()
-            mLocationClient!!.connect()
+            locationClient!!.connect()
         }
         //PlaceLocation request gets periodic updates on location
-        if (mLocationRequest == null) {
-            mLocationRequest = LocationRequest()
-            mLocationRequest!!.interval = LOCATION_UPDATE_INTERVAL.toLong()
-            mLocationRequest!!.fastestInterval = LOCATION_UPDATE_FASTEST_INTERVAL.toLong()
-            mLocationRequest!!.priority = LocationRequest.PRIORITY_LOW_POWER
+        if (locationRequest == null) {
+            locationRequest = LocationRequest()
+            locationRequest!!.interval = LOCATION_UPDATE_INTERVAL.toLong()
+            locationRequest!!.fastestInterval = LOCATION_UPDATE_FASTEST_INTERVAL.toLong()
+            locationRequest!!.priority = LocationRequest.PRIORITY_LOW_POWER
         }
 
-        if (mLastLocation != null) {
-            locationSubject = BehaviorSubject.createDefault(PlaceLocation(mLastLocation!!.latitude, mLastLocation!!.longitude))
-        } else {
-            locationSubject = BehaviorSubject.createDefault(getDefaultLocation())
-        }
+        locationSubject = BehaviorSubject.create()
     }
 
     fun getDefaultLocation(): PlaceLocation {
@@ -77,11 +67,16 @@ constructor(private val context: Context
         return location
     }
 
-    //public PlaceLocation getLastLocation() { return mLastLocation; }
+    fun getLastLocation(): PlaceLocation? {
+        lastLocation?.let {
+            return PlaceLocation(it.latitude, it.longitude);
+        }
+        return null
+    }
 
     fun locationResume() {
         Timber.d("locationResume")
-        if (mLocationClient != null && mLocationClient!!.isConnected) {
+        if (locationClient != null && locationClient!!.isConnected) {
             startLocationUpdates()
         }
     }
@@ -96,23 +91,25 @@ constructor(private val context: Context
         Timber.d("startLocationUpdates")
         if (hasLocationPermissions()) {
             //If no locations were available, tries to get the last known location
-            if (mLastLocation == null) {
-                updateLastKnownLocation(LocationServices.FusedLocationApi.getLastLocation(mLocationClient))
+            if (lastLocation == null) {
+                updateLastKnownLocation(LocationServices.FusedLocationApi.getLastLocation(locationClient))
             }
             //Starts the location service
-            LocationServices.FusedLocationApi.requestLocationUpdates(mLocationClient, mLocationRequest, this)
+            LocationServices.FusedLocationApi.requestLocationUpdates(locationClient, locationRequest, this)
 
             //When there is no location to check and no PlaceLocation show an error
-            if (mLastLocation == null && !hasLocationsEnabled())
-                Timber.d("no lastLocation and locations not enabled")
+            if (lastLocation == null && !hasLocationsEnabled())
+                Timber.w("no lastLocation and locations not enabled")
         } else {
-            Timber.d("no location permission")
+            Timber.w("no location permission")
+            // fallback to a default hard coded location to show something
+            locationSubject.onNext(getDefaultLocation())
         }
     }
 
     private fun stopLocationUpdates() {
-        if (mLocationClient!!.isConnected) {
-            LocationServices.FusedLocationApi.removeLocationUpdates(mLocationClient, this)
+        if (locationClient!!.isConnected) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(locationClient, this)
         }
     }
 
@@ -125,7 +122,7 @@ constructor(private val context: Context
     }
 
     private fun updateLastKnownLocation(location: Location) {
-        mLastLocation = location
+        lastLocation = location
         locationSubject.onNext(PlaceLocation(location.latitude, location.longitude))
     }
 
@@ -160,9 +157,9 @@ constructor(private val context: Context
     }
 
     private fun getItemDistance(location: Location?): String {
-        return if (location == null || mLastLocation == null) {
+        return if (location == null || lastLocation == null) {
             ""
-        } else dm.format(getMiles(mLastLocation!!.distanceTo(location).toDouble()))
+        } else dm.format(getMiles(lastLocation!!.distanceTo(location).toDouble()))
 
     }
 

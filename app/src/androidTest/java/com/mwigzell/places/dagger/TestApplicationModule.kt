@@ -3,6 +3,7 @@ package com.mwigzell.places.dagger
 import android.content.Context
 import com.mwigzell.places.repository.dao.IPlaceDaoGeneric
 import com.mwigzell.places.repository.api.network.NetworkStatus
+import com.mwigzell.places.repository.dao.ILocationDaoGeneric
 import com.mwigzell.places.util.AndroidServices
 import dagger.Module
 import dagger.Provides
@@ -34,6 +35,12 @@ class TestApplicationModule() {
     @Named("RetrofitCacheDir")
     fun getRetrofitCacheDir(context: Context): File {
         return context.externalCacheDir
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationDao(): ILocationDaoGeneric {
+        return Mockito.mock(ILocationDaoGeneric::class.java)
     }
 
     companion object {

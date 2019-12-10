@@ -1,27 +1,22 @@
 package com.mwigzell.places.repository.dao
 
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.mwigzell.places.model.Place
 
-data class PlaceKey constructor(
-      val latlong: String,
-      val radius: String,
-      val type: String,
-      val name: String
-)
-
-
-@Entity(tableName = "place", primaryKeys = [ "latlong", "radius", "type", "name"] )
-data class PlaceDto @JvmOverloads constructor(
-        @Embedded
-        val id: PlaceKey,
+@Entity(tableName = "place")
+data class PlaceDto constructor(
+        @PrimaryKey(autoGenerate = true)
+        val id: Int,
+        val latlong: String,
+        val radius: String,
+        val type: String,
+        val name: String,
         val photoReference: String
 ) {
     fun toPlace(): Place {
         val place = Place()
-        place.name = id.name
+        place.name = name
         val photos: ArrayList<Place.Photo> = ArrayList()
         val photo = place.Photo()
         photo.photoReference = photoReference

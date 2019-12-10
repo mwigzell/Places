@@ -10,11 +10,13 @@ import timber.log.Timber
 import javax.inject.Inject
 
 //TODO: Introduce Jetpack Navigator
-//TODO: Get offline mode by using both Couchbase and ROOM variants
+//TODO: Get offline mode using Couchbase
 //TODO: Replace Butterknife with RxBinding
 //TODO: Fix Proguard minify option
 //TODO: Add JaCoCo
 //TODO: Play with animation points in the rendering of view switching
+//TODO: Get location using Work Manager
+//TODO: Implement PlaceDetails UI ?
 
 /**
  * Created by mwigzell on 12/10/16.

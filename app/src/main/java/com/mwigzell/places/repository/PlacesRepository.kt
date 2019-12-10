@@ -18,40 +18,40 @@ import javax.inject.Singleton
 @Singleton
 class PlacesRepository @Inject constructor(
         val networkService: NetworkService,
-        val IPlaceDaoGeneric: IPlaceDaoGeneric
+        val placeDaoGeneric: IPlaceDaoGeneric
 ) : Repository() {
 
     fun loadPlaces(request: PlacesRequest): LiveData<List<Place>> {
         refreshUser(request)
-        return IPlaceDaoGeneric.get(request)
+        return placeDaoGeneric.get(request)
     }
 
     private fun refreshUser(request: PlacesRequest) {
         dispose()
 
-        val observable: Observable<PlacesResponse> =  Observable.create( { emitter ->
-            val exists = IPlaceDaoGeneric.hasPlaces(request)
+        val observable: Observable<PlacesResponse> = Observable.create({ emitter ->
+            val exists = placeDaoGeneric.hasPlaces(request)
 
             Timber.d("refreshUser: $request exists: $exists")
             if (!exists) {
                 Timber.d("Not in DB, trying web ...")
-                networkService.getPlaces(request)
-                        .subscribe(
-                                {
-                                    placesResponse -> Timber.d("Succeeded: $placesResponse")
-                                    emitter.onNext(placesResponse)
-                                    emitter.onComplete()
-                                },
-                                {
-                                    e -> Timber.e(e)
-                                    emitter.onError(e)
-                                },
-                                {
-                                    Timber.d("Completed getPlaces()")
-                                    emitter.onComplete()
-                                }
-                        )
-
+                addDisposable(
+                        networkService.getPlaces(request)
+                                .subscribe(
+                                        { placesResponse ->
+                                            Timber.d("Succeeded: $placesResponse")
+                                            emitter.onNext(placesResponse)
+                                        },
+                                        { e ->
+                                            Timber.e(e)
+                                            emitter.onError(e)
+                                        },
+                                        {
+                                            Timber.d("Completed getPlaces()")
+                                            emitter.onComplete()
+                                        }
+                                )
+                )
             } else {
                 Timber.d("Found places in DB!")
                 emitter.onComplete()
@@ -61,8 +61,8 @@ class PlacesRepository @Inject constructor(
 
         val disposable = observable
                 .subscribeOn(Schedulers.io())
-                .map { response:PlacesResponse ->
-                    when(response.status) {
+                .map { response: PlacesResponse ->
+                    when (response.status) {
                         "OK" -> insertPlaces(request, response.results).subscribe()
                         else -> insertPlaces(request, ArrayList()).subscribe()
                     }
@@ -70,9 +70,9 @@ class PlacesRepository @Inject constructor(
                 }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        {d -> Timber.d("done: d: $d")},
-                        {e -> Timber.e(e)},
-                        {Timber.d("Completed loadPlaces()")}
+                        { d -> Timber.d("done: d: $d") },
+                        { e -> Timber.e(e) },
+                        { Timber.d("Completed loadPlaces()") }
                 )
         addDisposable(disposable)
 
@@ -80,7 +80,7 @@ class PlacesRepository @Inject constructor(
 
     private fun insertPlaces(request: PlacesRequest, places: List<Place>): Completable {
         return Completable.fromCallable {
-            IPlaceDaoGeneric.insert(request, places)
+            placeDaoGeneric.insert(request, places)
             Timber.d("did IPlaceDaoGeneric.insert()")
         }
     }

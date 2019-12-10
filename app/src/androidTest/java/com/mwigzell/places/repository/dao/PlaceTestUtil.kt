@@ -6,7 +6,7 @@ class PlaceTestUtil {
 
     companion object {
         fun create(name: String, photoReference: String, type: String = PlaceDaoTest.TYPE): PlaceDto {
-            return PlaceDto(PlaceKey(PlaceDaoTest.LATLONG, PlaceDaoTest.RADIUS, type, name), photoReference)
+            return PlaceDto(0, PlaceDaoTest.LATLONG, PlaceDaoTest.RADIUS, type, name, photoReference)
         }
 
         fun defaultRequest(): PlacesRequest {

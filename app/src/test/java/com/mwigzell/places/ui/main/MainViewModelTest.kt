@@ -6,13 +6,18 @@ import com.mwigzell.places.any
 import com.mwigzell.places.model.Place
 import com.mwigzell.places.model.PlaceLocation
 import com.mwigzell.places.model.Type
+import com.mwigzell.places.repository.LocationRepository
 import com.mwigzell.places.repository.PlacesRepository
 import com.mwigzell.places.repository.PlacesRequest
 import com.mwigzell.places.repository.TypesRepository
 import com.mwigzell.places.repository.api.LocationService
+import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock
@@ -25,7 +30,7 @@ class MainViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     @Mock
-    lateinit var locationService: LocationService
+    lateinit var locationRepository: LocationRepository
 
     @Mock
     lateinit var typesRepository: TypesRepository
@@ -34,29 +39,26 @@ class MainViewModelTest {
     lateinit var placesRepository: PlacesRepository
 
     lateinit var viewModel: MainViewModel
-    lateinit var location: BehaviorSubject<PlaceLocation>
     val placesLiveData: MutableLiveData<List<Place>> = MutableLiveData()
     val typesLiveData: MutableLiveData<List<Type>> = MutableLiveData()
+    val locationLiveData: MutableLiveData<PlaceLocation> = MutableLiveData()
 
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        val placeLocation = PlaceLocation(LATLONG)
-        location = BehaviorSubject.createDefault(placeLocation)
-        `when`(locationService.getDefaultLocation())
-                .thenReturn(placeLocation)
-        `when`(locationService.observeLocationChanges())
-                .thenReturn(location)
+        `when`(locationRepository.getLastLocation()).thenReturn(locationLiveData)
         `when`(placesRepository.loadPlaces(any())).thenReturn(placesLiveData)
         `when`(typesRepository.loadTypes()).thenReturn(typesLiveData)
         viewModel = MainViewModel(
                 typesRepository,
                 placesRepository,
-                locationService)
+                locationRepository)
     }
 
     @Test
-    fun testConstruction() {
+    fun testLocation() {
+        locationLiveData.value = PlaceLocation(LATLONG)
+        viewModel.getPlaces().observeForever(){}
         verify(placesRepository)
                 .loadPlaces(PlacesRequest(
                         LATLONG, MainViewModel.DEFAULT_RADIUS, MainViewModel.DEFAULT_TYPE))
@@ -72,9 +74,8 @@ class MainViewModelTest {
 
     @Test
     fun testTypeSelected_withNewLocation() {
-
-        location.onNext(PlaceLocation(LATLONG2))
-
+        locationLiveData.value = PlaceLocation(LATLONG2)
+        viewModel.getPlaces().observeForever(){}
         viewModel.onTypeSelected(Type(TYPE_NAME))
         postPlaces()
 
@@ -85,6 +86,7 @@ class MainViewModelTest {
 
     @Test
     fun testGetPlaces() {
+        locationLiveData.value = PlaceLocation(LATLONG2)
         postPlaces()
         var places: List<Place>? = null
         viewModel.getPlaces().observeForever { places = it}
@@ -106,6 +108,8 @@ class MainViewModelTest {
 
     @Test
     fun testGetSelectedType() {
+        locationLiveData.value = PlaceLocation(LATLONG2)
+        viewModel.getPlaces().observeForever(){}
         val type = Type(TYPE_NAME)
         viewModel.onTypeSelected(type)
         var typeData: Type? = null

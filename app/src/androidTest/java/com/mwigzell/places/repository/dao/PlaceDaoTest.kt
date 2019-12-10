@@ -34,7 +34,7 @@ class PlaceDaoTest {
         db.close()
     }
 
-    fun insertData(type: String = PlaceDaoTest.TYPE): List<PlaceDto> {
+    private fun insertData(type: String = PlaceDaoTest.TYPE): List<PlaceDto> {
         val list = ArrayList<PlaceDto>()
         list.add(PlaceTestUtil.create("george", "a photo ref", type))
         list.add(PlaceTestUtil.create("harry", "a photo ref2", type))
@@ -55,8 +55,13 @@ class PlaceDaoTest {
         placesLiveData.observeOnce {places = it }
 
         assertEquals(2, places!!.size)
-        assertThat(places!!.get(0), equalTo(list.get(0)))
-        assertThat(places!!.get(1), equalTo(list.get(1)))
+        for (i in 0..1) {
+            assertThat(places!!.get(i).latlong, equalTo(list.get(i).latlong))
+            assertThat(places!!.get(i).radius, equalTo(list.get(i).radius))
+            assertThat(places!!.get(i).type, equalTo(list.get(i).type))
+            assertThat(places!!.get(i).name, equalTo(list.get(i).name))
+            assertThat(places!!.get(i).photoReference, equalTo(list.get(i).photoReference))
+        }
     }
 
     @Test

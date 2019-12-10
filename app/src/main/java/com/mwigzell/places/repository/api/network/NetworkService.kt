@@ -20,7 +20,6 @@ constructor(private val serviceCreator: ServiceCreator) {
         client = serviceCreator.createService(ServiceCreator.PlacesClient::class.java)
     }
 
-    @JvmOverloads
     fun getPlaces(request: PlacesRequest): Observable<PlacesResponse> {
         Timber.d("--> Get places $request")
 

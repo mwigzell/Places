@@ -4,24 +4,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.mwigzell.places.Mockable
-import com.mwigzell.places.repository.api.LocationService
 import com.mwigzell.places.model.Place
 import com.mwigzell.places.model.PlaceLocation
 import com.mwigzell.places.model.Type
+import com.mwigzell.places.repository.LocationRepository
 import com.mwigzell.places.repository.PlacesRepository
 import com.mwigzell.places.repository.PlacesRequest
 import com.mwigzell.places.repository.TypesRepository
 import com.mwigzell.places.ui.BaseViewModel
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Singleton
 
 //TODO: persist last type selected
 
 @Mockable
+@Singleton
 class MainViewModel @Inject constructor(
         val typesRepository: TypesRepository,
         val placesRepository: PlacesRepository,
-        val locationService: LocationService
+        val locationRepository: LocationRepository
 ): BaseViewModel() {
 
     private val places: MediatorLiveData<List<Place>> = MediatorLiveData()
@@ -29,15 +31,19 @@ class MainViewModel @Inject constructor(
     private lateinit var location: PlaceLocation
     private val selectedType: MutableLiveData<Type> = MutableLiveData()
     private var placesSource: LiveData<List<Place>>? = null
+    lateinit private var locationSource: LiveData<PlaceLocation>
+    private var loadedPlaces = false
 
     init {
-       location = locationService.getDefaultLocation()
-        addDisposable(locationService.observeLocationChanges()
-                .subscribe {
-                    location = it
-                    Timber.d("Got new location $it")
-                })
-        loadPlaces()
+        locationSource = locationRepository.getLastLocation()
+        places.addSource(locationSource) {
+            location = it
+            Timber.d("Got new location $it")
+            if (places.value == null && !loadedPlaces) {
+                loadPlaces()
+                loadedPlaces = true
+            }
+        }
     }
 
     fun getPlaces(): LiveData<List<Place>> { return places }

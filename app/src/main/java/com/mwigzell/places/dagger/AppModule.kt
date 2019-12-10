@@ -2,11 +2,9 @@ package com.mwigzell.places.dagger
 
 import android.content.Context
 import androidx.room.Room
-import com.mwigzell.places.repository.dao.IPlaceDaoGeneric
-import com.mwigzell.places.repository.dao.PlaceDaoGeneric
 import com.mwigzell.places.repository.api.network.NetworkStatus
 import com.mwigzell.places.repository.api.network.ServiceCreator
-import com.mwigzell.places.repository.dao.PlacesDatabase
+import com.mwigzell.places.repository.dao.*
 import com.mwigzell.places.util.AndroidServices
 import com.mwigzell.places.util.FileUtils
 import dagger.Module
@@ -38,7 +36,7 @@ class AppModule() {
     @Provides
     @Named("RetrofitCacheDir")
     fun getRetrofitCacheDir(context: Context): File {
-        return context.externalCacheDir
+        return context.externalCacheDir!!
     }
 
     @Provides
@@ -46,6 +44,10 @@ class AppModule() {
     fun getPlacesDatabase(context: Context): PlacesDatabase {
         return Room.databaseBuilder(context, PlacesDatabase::class.java, "PlacesDatabase").build()
     }
+
+    @Provides
+    @Singleton
+    fun provideLocationDao(locationDao: LocationDaoGeneric): ILocationDaoGeneric = locationDao
 
     companion object {
         const val RETROFIT_BASE_URL = "https://maps.googleapis.com"

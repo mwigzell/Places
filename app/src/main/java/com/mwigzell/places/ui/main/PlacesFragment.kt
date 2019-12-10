@@ -19,8 +19,6 @@ import com.mwigzell.places.ui.BaseFragment
 import timber.log.Timber
 import javax.inject.Inject
 
-//TODO: persist last get places response
-
 class PlacesFragment : BaseFragment() {
 
     @BindView(com.mwigzell.places.R.id.noResults)

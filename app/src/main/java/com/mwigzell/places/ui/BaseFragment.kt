@@ -42,7 +42,8 @@ abstract class BaseFragment : DaggerFragment() {
         if (requestCode == REQUEST_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //Start location process
-                locationService.locationResume()
+                //locationService.locationResume()
+                Timber.d("got location permission")
             } else {
                 Timber.d("no location permission")
             }

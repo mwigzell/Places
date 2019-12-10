@@ -13,6 +13,7 @@ import javax.inject.Inject
  */
 class PlaceDaoGeneric @Inject constructor(db: PlacesDatabase) : IPlaceDaoGeneric {
     val placesDao: PlaceDao
+    var firstTime = true
 
     init {
         placesDao = db.getPlaceDao()
@@ -29,9 +30,13 @@ class PlaceDaoGeneric @Inject constructor(db: PlacesDatabase) : IPlaceDaoGeneric
         return Transformations.switchMap(liveData) {
             val list = ArrayList<Place>()
             it.forEach { list.add(it.toPlace()) }
-            val liveData: MutableLiveData<List<Place>> = MutableLiveData()
-            liveData.value = list
-            liveData
+            val placeLiveData: MutableLiveData<List<Place>> = MutableLiveData()
+            // ROOM DAO get will emit empty list before we can populate the entity
+            if ( !(firstTime && list.size == 0)) {
+                placeLiveData.value = list // we don't want empty lists: thanks, ROOM!
+            }
+            firstTime = false
+            placeLiveData
         }
     }
 
@@ -53,11 +58,12 @@ class PlaceDaoGeneric @Inject constructor(db: PlacesDatabase) : IPlaceDaoGeneric
                 photoReference.let { photoReference = photo.photoReference }
             }
         }
-        return PlaceDto(PlaceKey(
+        return PlaceDto(
+                0,
                 request.location,
                 request.radius,
                 request.type,
-                place.name),
+                place.name,
                 photoReference)
     }
 }

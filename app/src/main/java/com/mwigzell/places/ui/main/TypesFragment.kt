@@ -19,8 +19,6 @@ import com.mwigzell.places.ui.BaseFragment
 import timber.log.Timber
 import javax.inject.Inject
 
-//TODO: persist last types list
-
 /**
  * Show types in a list
  */
