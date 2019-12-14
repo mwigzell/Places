@@ -107,6 +107,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$ROOM_VERSION"
     implementation "androidx.room:room-ktx:$ROOM_VERSION"
     implementation "androidx.room:room-rxjava2:$ROOM_VERSION"
+    implementation "androidx.lifecycle:lifecycle-extensions:$LIFECYCLE_VERSION"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$LIFECYCLE_VERSION"
     implementation "androidx.lifecycle:lifecycle-livedata:$LIFECYCLE_VERSION"
 

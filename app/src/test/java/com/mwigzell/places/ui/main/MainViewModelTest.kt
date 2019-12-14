@@ -10,14 +10,8 @@ import com.mwigzell.places.repository.LocationRepository
 import com.mwigzell.places.repository.PlacesRepository
 import com.mwigzell.places.repository.PlacesRequest
 import com.mwigzell.places.repository.TypesRepository
-import com.mwigzell.places.repository.api.LocationService
-import io.reactivex.android.plugins.RxAndroidPlugins
-import io.reactivex.plugins.RxJavaPlugins
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
 import org.junit.Assert.*
 import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mock

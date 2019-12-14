@@ -3,6 +3,7 @@ package com.mwigzell.places.ui.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+//import androidx.lifecycle.SavedStateHandle
 import com.mwigzell.places.Mockable
 import com.mwigzell.places.model.Place
 import com.mwigzell.places.model.PlaceLocation
@@ -21,6 +22,7 @@ import javax.inject.Singleton
 @Mockable
 @Singleton
 class MainViewModel @Inject constructor(
+        //val savedStateHandle: SavedStateHandle,
         val typesRepository: TypesRepository,
         val placesRepository: PlacesRepository,
         val locationRepository: LocationRepository
